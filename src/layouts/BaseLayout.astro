@@ -36,12 +36,12 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {/* Preload only the above-the-fold hero (display) face. The rest load with
-        font-display: swap and show the plain generic until ready — fallbacks:[]
-        in astro.config.mjs means no metric-adjusted fallback face is generated,
-        so preloading every weight would only compete for bandwidth. */}
+    {/* Preload the two faces guaranteed above the fold: the display face (H1)
+        and the body face (hero sub-paragraph + CTA buttons). Mono is only small
+        labels; the Thai face is unicode-range scoped and never loads on EN — so
+        leave both to font-display: swap rather than spend preload bandwidth. */}
     <Font cssVariable="--font-space-grotesk" preload />
-    <Font cssVariable="--font-ibm-plex-sans" />
+    <Font cssVariable="--font-ibm-plex-sans" preload />
     <Font cssVariable="--font-ibm-plex-sans-thai" />
     <Font cssVariable="--font-ibm-plex-mono" />
 

@@ -8,6 +8,9 @@ interface Props {
 const { matrix } = Astro.props;
 ---
 
+<p class="mb-2 font-mono text-[10px] tracking-wide text-dim sm:hidden" aria-hidden="true">
+  {matrix.scrollHint}
+</p>
 <div data-reveal class="overflow-x-auto rounded-md border border-line-soft">
   <table class="w-full min-w-[40rem] border-collapse text-left text-sm">
     <thead>

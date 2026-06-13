@@ -23,14 +23,14 @@ const targets: { code: Locale; label: string }[] = [
       <>
         {i > 0 && <span aria-hidden="true" class="px-1.5 text-line">/</span>}
         {code === locale ? (
-          <span aria-current="true" class="text-accent">
+          <span aria-current="true" class="inline-flex min-h-9 items-center px-1 text-accent">
             {label}
           </span>
         ) : (
           <a
             href={switchLocalePath(pathname, code)}
             title={t("lang.switchTo")}
-            class="text-dim transition-colors hover:text-fog"
+            class="inline-flex min-h-9 items-center px-1 text-dim transition-colors hover:text-fog"
           >
             {label}
           </a>

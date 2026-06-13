@@ -342,6 +342,7 @@ export const en: LocaleContent = {
       title: "Capability depth, with proof",
       lead: "Three levels: daily work, production experience, working knowledge. Each row links to the case study that backs it up.",
       depthLegend: "daily work · production experience · working knowledge",
+      scrollHint: "Scroll the table → for the proof column",
       columns: { area: "Capability", depth: "Depth", proof: "Proof" },
       rows: [
         {

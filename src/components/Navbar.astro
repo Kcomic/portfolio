@@ -57,13 +57,15 @@ const isActive = (base: string) => basePath === base || basePath.startsWith(`${b
       <button
         id="nav-toggle"
         type="button"
-        class="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded border border-line-soft"
+        class="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded border border-line-soft"
         aria-expanded="false"
         aria-controls="nav-mobile"
         aria-label={t("nav.open")}
+        data-label-open={t("nav.open")}
+        data-label-close={t("nav.close")}
       >
-        <span class="block h-px w-4 bg-fog transition-transform"></span>
-        <span class="block h-px w-4 bg-fog transition-transform"></span>
+        <span class="block h-px w-4 bg-fog transition-transform duration-200"></span>
+        <span class="block h-px w-4 bg-fog transition-transform duration-200"></span>
       </button>
     </div>
   </div>
@@ -82,7 +84,7 @@ const isActive = (base: string) => basePath === base || basePath.startsWith(`${b
               href={localizePath(base, locale)}
               aria-current={isActive(base) ? "page" : undefined}
               class:list={[
-                "block rounded px-2 py-2.5",
+                "block rounded px-2 py-3",
                 isActive(base) ? "bg-ink-900 text-accent" : "text-mist",
               ]}
             >
@@ -100,7 +102,11 @@ const isActive = (base: string) => basePath === base || basePath.startsWith(`${b
   const menu = document.getElementById("nav-mobile");
   toggle?.addEventListener("click", () => {
     const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
+    const next = !open;
+    toggle.setAttribute("aria-expanded", String(next));
+    // Keep the accessible name truthful: it closes the menu while open.
+    const label = next ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
+    if (label) toggle.setAttribute("aria-label", label);
     if (menu) menu.hidden = open;
   });
 </script>

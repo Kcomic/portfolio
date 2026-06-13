@@ -100,6 +100,7 @@ export interface ExpertiseContent {
   groups: SkillGroupData[];
   matrix: SectionIntro & {
     depthLegend: string;
+    scrollHint: string;
     columns: { area: string; depth: string; proof: string };
     rows: MatrixRow[];
   };

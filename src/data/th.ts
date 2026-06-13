@@ -341,6 +341,7 @@ export const th: LocaleContent = {
       title: "ระดับความลึก พร้อมหลักฐาน",
       lead: "สามระดับ: ใช้ทำงานทุกวัน, เคยใช้จริงใน production, ใช้งานได้ — แต่ละแถวลิงก์ไปยัง case study ที่เป็นหลักฐาน",
       depthLegend: "ใช้ทุกวัน · เคยใช้ใน production · ใช้งานได้",
+      scrollHint: "เลื่อนตาราง → เพื่อดูคอลัมน์หลักฐาน",
       columns: { area: "ความสามารถ", depth: "ระดับ", proof: "หลักฐาน" },
       rows: [
         {

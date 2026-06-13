@@ -1,8 +1,6 @@
 ---
 import { caseStudySlug, getCaseStudies } from "@/lib/caseStudies";
 import type { Locale } from "@/i18n/config";
-import { useTranslations } from "@/i18n/ui";
-import { localizePath } from "@/i18n/utils";
 import { getContent } from "@/data/content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Hero from "@/components/Hero.astro";
@@ -18,7 +16,6 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const t = useTranslations(locale);
 const { build, strengths, caseStudies, stack, thinking, cta } = getContent(locale).home;
 
 const entries = await getCaseStudies(locale);
@@ -41,7 +38,7 @@ const entries = await getCaseStudies(locale);
               <span class="font-mono text-xs text-dim">{String(i + 1).padStart(2, "0")}</span>
               <div>
                 <h3 class="font-display text-base font-medium text-fog">{item.title}</h3>
-                <p class="mt-1.5 text-sm leading-relaxed text-dim">{item.note}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-mist">{item.note}</p>
               </div>
             </div>
           </li>
@@ -93,12 +90,6 @@ const entries = await getCaseStudies(locale);
         ))
       }
     </div>
-    <a
-      href={localizePath("/case-studies", locale)}
-      class="mt-4 inline-block font-mono text-sm text-mist transition-colors hover:text-accent"
-    >
-      {t("home.viewAll")} →
-    </a>
   </section>
 
   {/* 04 — Stack: compact grouped badges */}

@@ -118,6 +118,16 @@
 }
 
 @layer components {
+  /* Mobile menu toggle: the two bars fold into an X while the menu is open.
+     Keyed off aria-expanded so markup stays the single source of state. */
+  #nav-toggle[aria-expanded="true"] > span:nth-child(1) {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  #nav-toggle[aria-expanded="true"] > span:nth-child(2) {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
   /* Scroll reveal — opacity/transform only, disabled for reduced motion */
   .reveal {
     opacity: 0;
