@@ -1,0 +1,141 @@
+---
+import { getCollection } from "astro:content";
+import { caseStudySlug } from "@/lib/caseStudies";
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import { localizePath } from "@/i18n/utils";
+import { getContent } from "@/data/content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Hero from "@/components/Hero.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import StrengthCard from "@/components/StrengthCard.astro";
+import CaseStudyCard from "@/components/CaseStudyCard.astro";
+import SystemFlowDiagram from "@/components/SystemFlowDiagram.astro";
+import CTASection from "@/components/CTASection.astro";
+import TechBadge from "@/components/TechBadge.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const { build, strengths, caseStudies, stack, thinking, cta } = getContent(locale).home;
+
+const entries = (await getCollection("caseStudies", ({ data }) => data.locale === locale)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout locale={locale}>
+  <Hero locale={locale} />
+
+  {/* 01 — What I build: editorial two-column list, not a card wall */}
+  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+    <SectionHeading index={build.index} eyebrow={build.eyebrow} title={build.title} lead={build.lead} />
+    <ul class="mt-12 grid gap-x-12 md:grid-cols-2">
+      {
+        build.items.map((item, i) => (
+          <li
+            data-reveal
+            class:list={["border-t border-line-soft py-5", i === build.items.length - 1 && "md:col-span-2 md:max-w-[calc(50%-1.5rem)]"]}
+          >
+            <div class="flex items-baseline gap-4">
+              <span class="font-mono text-xs text-dim">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <h3 class="font-display text-base font-medium text-fog">{item.title}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-dim">{item.note}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {/* 02 — Core strengths: offset grid, second column pushed down */}
+  <section class="border-y border-line-soft bg-ink-900/30">
+    <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+      <SectionHeading index={strengths.index} eyebrow={strengths.eyebrow} title={strengths.title} />
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:gap-6">
+        <div class="flex flex-col gap-5 lg:gap-6">
+          {strengths.items.filter((_, i) => i % 2 === 0).map((s) => (
+            <StrengthCard strength={s} index={strengths.items.indexOf(s)} />
+          ))}
+        </div>
+        <div class="flex flex-col gap-5 lg:mt-12 lg:gap-6">
+          {strengths.items.filter((_, i) => i % 2 === 1).map((s) => (
+            <StrengthCard strength={s} index={strengths.items.indexOf(s)} />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 03 — Selected case studies */}
+  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+    <SectionHeading
+      index={caseStudies.index}
+      eyebrow={caseStudies.eyebrow}
+      title={caseStudies.title}
+      lead={caseStudies.lead}
+    />
+    <div class="mt-12">
+      {
+        entries.map((entry) => (
+          <CaseStudyCard
+            locale={locale}
+            slug={caseStudySlug(entry)}
+            title={entry.data.title}
+            subtitle={entry.data.subtitle}
+            summary={entry.data.summary}
+            challenge={entry.data.challenge}
+            stack={entry.data.stack}
+            order={entry.data.order}
+          />
+        ))
+      }
+    </div>
+    <a
+      href={localizePath("/case-studies", locale)}
+      class="mt-4 inline-block font-mono text-sm text-mist transition-colors hover:text-accent"
+    >
+      {t("home.viewAll")} →
+    </a>
+  </section>
+
+  {/* 04 — Stack: compact grouped badges */}
+  <section class="border-y border-line-soft bg-ink-900/30">
+    <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+      <SectionHeading index={stack.index} eyebrow={stack.eyebrow} title={stack.title} lead={stack.lead} />
+      <div class="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          stack.groups.map((group) => (
+            <div data-reveal>
+              <h3 class="font-mono text-xs tracking-[0.18em] text-dim uppercase">{group.title}</h3>
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                {group.items.map((item) => (
+                  <TechBadge label={item} />
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* 05 — System thinking */}
+  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <SectionHeading index={thinking.index} eyebrow={thinking.eyebrow} title={thinking.title} lead={thinking.lead} />
+      </div>
+      <div class="lg:col-span-7">
+        <SystemFlowDiagram steps={thinking.steps} />
+      </div>
+    </div>
+  </section>
+
+  <CTASection title={cta.title} body={cta.body} primary={cta.primary} />
+</BaseLayout>

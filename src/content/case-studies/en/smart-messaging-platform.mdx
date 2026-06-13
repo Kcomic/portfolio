@@ -1,0 +1,68 @@
+---
+title: "Smart Messaging Platform"
+subtitle: "An enterprise campaign messaging platform — validation, scheduling, delivery, and reporting workflows that had to hold up in production."
+locale: "en"
+order: 1
+summary: "An enterprise platform for campaign creation, recipient validation, scheduling, delivery, and reporting — supporting manual input, file input, contact selection, validation rules, and background processing at scale."
+challenge: "Processing campaign inputs of up to 1,000,000 records without memory spikes, while keeping scheduling, delivery, and reporting reliable."
+role: "Designed and developed backend services, validation flow, MongoDB queries, job scheduling logic, report-related logic, and deployment-related improvements."
+stack: ["NestJS", "Angular", "MongoDB", "Mongoose", "Agenda", "Node.js", "Docker", "Kubernetes", "GitHub Actions"]
+---
+
+import CaseStudySection from "@/components/CaseStudySection.astro";
+
+<CaseStudySection n="01" title="Context">
+
+This is an enterprise messaging platform that covers the full campaign lifecycle: creation, recipient validation, scheduling, delivery, and reporting. A campaign can be built from manual input, an uploaded file, or contacts and groups already in the system, and every path has to pass the same validation rules before anything is sent.
+
+Behind the UI sit several backend services, with background processing doing most of the heavy work. I designed and developed backend services, the validation flow, MongoDB queries, job scheduling logic, report-related logic, and improvements to how the services were deployed. The platform was already serving real customers, so every change had to respect campaigns that were in flight at the time.
+
+</CaseStudySection>
+
+<CaseStudySection n="02" title="Problem">
+
+The hard part was not the feature list. Campaign creation, scheduling, and delivery are well-understood problems in isolation. The hard part was that a single campaign could carry up to 1,000,000 recipient records, and the entire workflow had to stay reliable at that size.
+
+A naive implementation reads the uploaded file into memory, validates everything in one pass, and falls over under production load. Scheduling had to fire on time even when jobs were large. Reports had to aggregate delivery results from high-volume collections without timing out. And all of this ran across multiple backend services deployed independently to Kubernetes, where a careless change in one service could quietly break the pipeline in another.
+
+</CaseStudySection>
+
+<CaseStudySection n="03" title="Technical challenges">
+
+- **Input scale.** A single campaign input could reach 1,000,000 records, arriving as files, manual entries, or contact selections.
+- **Memory control.** File processing had to avoid loading entire inputs into memory; one bad upload should not take a service down.
+- **Validation rules.** Phone number formats, template variables, duplicates, and general input correctness all had to be checked before delivery.
+- **Reliable scheduling.** Large campaign jobs had to start on time and survive service restarts mid-run.
+- **Reporting volume.** Delivery results had to be aggregated across high-volume collections without slow queries.
+- **Multiple services.** Several backend services had to stay consistent with each other as the platform grew.
+- **Safe deploys.** Kubernetes rollouts could not interrupt campaigns that were mid-delivery.
+- **Evolving rules.** Business rules changed regularly, so the validation and delivery flow had to stay easy to modify.
+
+</CaseStudySection>
+
+<CaseStudySection n="04" title="Solution">
+
+I kept the backend on NestJS services and put the effort into the data flow rather than rewriting anything. Validation became an explicit preparation pipeline: inputs are read in chunks, validated, deduplicated, and staged before delivery, so one pipeline serves manual input, file input, and contact selection alike.
+
+Long-running work moved into background jobs, with large workloads split into batches sized so memory stays flat regardless of input size. The trade-off is more bookkeeping — job state, batch boundaries, resume points — but that bookkeeping is exactly what makes retries safe.
+
+On the database side, I designed MongoDB indexes around actual query patterns, such as `{ campaignId: 1, status: 1 }`, and structured aggregations to filter with `$match` early instead of grouping over raw collections. Deployment moved to a more repeatable flow: Docker images built in GitHub Actions and rolled out to Kubernetes in a controlled way.
+
+</CaseStudySection>
+
+<CaseStudySection n="05" title="Result">
+
+Improved scalability, maintainability, and operational reliability of campaign processing and reporting workflows.
+
+Batch-based processing means input size no longer dictates memory usage, so large campaigns behave like small ones operationally. The validation pipeline gives the team a single place to change business rules instead of hunting through services. And the Docker, Kubernetes, and GitHub Actions flow made deploys repeatable enough that releasing a fix stopped being a risky event in itself.
+
+</CaseStudySection>
+
+<CaseStudySection n="06" title="What I learned">
+
+- **Large input processing needs careful memory control** — and it has to be decided at design time. Chunking and batching are cheap to build in early and expensive to retrofit after the first production incident.
+- **Background jobs must be designed around failure and retry behavior.** A job that only works on the happy path will eventually leave a campaign half-sent; resume points matter more than raw throughput.
+- **Reporting performance depends heavily on data model and query pattern.** Index design and aggregation shape bought far more than any hardware change would have.
+- **Enterprise systems need maintainability as much as raw performance.** Business rules changed faster than the data volume grew, so the structure that let us modify validation safely ended up mattering as much as the optimizations.
+
+</CaseStudySection>

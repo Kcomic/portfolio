@@ -1,0 +1,65 @@
+---
+title: "E-commerce Order Consolidator"
+subtitle: "ระบบรวม order จากหลาย e-commerce platform ให้จัดการได้ใน workflow เดียว"
+locale: "th"
+order: 3
+summary: "ระบบที่รวม order จาก Shopee, Lazada และ seller platform อื่นมาไว้ที่เดียว — ทั้ง order list, order detail, order status, shipment status และ logistics workflow ของ Thailand Post"
+challenge: "เชื่อมหลาย platform API ที่ order format, OAuth 2.0 token lifecycle, พฤติกรรม webhook และ sandbox ไม่เหมือนกันและไม่สมบูรณ์ ให้กลายเป็น workflow เดียวที่เชื่อถือได้"
+role: "มีส่วนพัฒนา frontend และ backend, authentication flow, platform API integration, webhook handling และ order / shipment workflow"
+stack: ["React / Next.js", "Node.js", "Express.js", "SQL database", "REST API", "OAuth 2.0", "Webhooks", "Shopee API", "Lazada API", "Thailand Post API"]
+---
+
+import CaseStudySection from "@/components/CaseStudySection.astro";
+
+<CaseStudySection n="01" title="ที่มา">
+
+โปรเจกต์นี้เป็นระบบ order consolidator ที่ดึง order จากหลาย seller platform มารวมไว้ในระบบเดียว ให้ผู้ขายและทีม operation จัดการ order list, order detail, order status, shipment status และงาน logistics ได้จากจุดเดียว แทนที่จะต้อง login เข้าแต่ละ platform แยกกัน
+
+platform ที่เกี่ยวข้องคือ Shopee, Lazada และ Shopat24 / 24Shopping ในบางส่วน รวมถึง integration กับ Thailand Post สำหรับ workflow ด้าน shipment และการนัดรับพัสดุ ผมทำงานนี้ในฐานะส่วนหนึ่งของทีม โดยมีส่วนใน frontend, backend, authentication flow, platform API integration, webhook handling และ order / shipment workflow ในเคสนี้ขอเล่าเฉพาะปัญหาเชิง integration และวิธีที่ทีมเลือกแก้
+
+</CaseStudySection>
+
+<CaseStudySection n="02" title="โจทย์">
+
+ถ้าขายของอยู่บนหลาย platform พร้อมกัน งานที่จริง ๆ แล้วเป็นเรื่องเดียวกัน — เช็ค order ใหม่, confirm order, จัดส่ง, ตาม tracking — จะกระจายอยู่ในหลายหน้าจอที่พฤติกรรมไม่เหมือนกันเลย แต่ละ platform มี API ของตัวเอง, order format ของตัวเอง, shipment flow ของตัวเอง, วิธี authorize ของตัวเอง และวิธีส่ง status update ที่ต่างกัน
+
+ในการทำงานจริง ทีม operation ต้องสลับไปมาระหว่าง platform ทั้งวัน และงานที่ข้าม platform อย่างการรวมพัสดุของทั้งวันเพื่อให้ Thailand Post เข้ารับ ก็ต้องอาศัยคนมานั่งต่อ process เอง โจทย์คือลดความกระจัดกระจายนี้ลง — รวมข้อมูลจากทุก platform เข้ามาในระบบเดียว ให้ทำงานผ่าน workflow เดียวได้ โดยไม่หลอกตัวเองว่าทุก platform เหมือนกัน ทั้งที่จริง ๆ แล้วต่างกัน
+
+</CaseStudySection>
+
+<CaseStudySection n="03" title="ความท้าทายทางเทคนิค">
+
+- **หลาย platform API** — แต่ละเจ้าออกแบบ order ไม่เหมือนกันทั้งชื่อ field, status model, pagination และ rate limit จึงเขียน integration แบบ generic ตัวเดียวจบไม่ได้
+- **OAuth 2.0 token lifecycle** — แต่ละ platform มี authorization flow ของตัวเอง access token / refresh token หมดอายุคนละจังหวะ และ fail คนละแบบ
+- **พฤติกรรม webhook** — event ของ order และ status ส่งมาจากระบบภายนอก ไม่การันตีลำดับ และมีหายเป็นช่วง ๆ ต้องตรวจจับและ reconcile ให้ได้
+- **Thailand Post integration** — งาน logistics ทั้งการสร้าง shipment, tracking code และ status update ต้องต่อกับ API อีกชุดที่มี convention ของตัวเอง
+- **API behavior ไม่นิ่ง** — response จริงไม่ตรงกับ document เสมอไป error handling จึงต้องเขียนแบบ defensive ไม่ใช่เชื่อ spec ไปก่อน
+- **sandbox ไม่สมบูรณ์** — sandbox บางส่วนขาดหายหรือทำงานต่างจาก production ซึ่งกระทบโดยตรงกับวิธีทดสอบ flow แบบ end-to-end ของ Shopee และ Lazada
+
+</CaseStudySection>
+
+<CaseStudySection n="04" title="แนวทางที่ใช้">
+
+ทีมสร้าง order management workflow กลาง โดยมี integration layer แยกตาม platform แต่ละ connector คุยกับ platform ผ่าน REST + OAuth 2.0 ดูแล token refresh ของตัวเอง และแปลง order payload เฉพาะของ platform ให้เป็น internal order model กลางตั้งแต่ขา ingest การ normalize ตรงนี้เป็น trade-off ที่ตั้งใจเลือก — เพิ่ม platform ใหม่ทีไรก็ต้องลงแรงเขียน mapping แต่แลกกับการที่ logic ฝั่ง order, shipment และ UI ไม่ต้องมี if-else ตาม platform กระจายทั่วระบบ
+
+status update ใช้ webhook เป็นหลักใน platform ที่รองรับ และใช้การเรียก API เพื่อ reconcile state เมื่อ event ตกหล่น — เรามอง webhook เป็นทางด่วน ไม่ใช่ source of truth ฝั่ง shipment ต่อกับ Thailand Post API สำหรับ tracking code และ logistics update ข้อมูล order กับ platform เก็บใน SQL แบบ relational ส่วน frontend ออกแบบ flow ให้ทีม operation ใช้งานจริงได้จากที่เดียว ทั้ง order list, order detail, การเปลี่ยน status และงานจัดส่ง
+
+</CaseStudySection>
+
+<CaseStudySection n="05" title="ผลลัพธ์">
+
+ระบบช่วยรวม order operation จากหลาย platform มาอยู่ใน workflow เดียว และลดความกระจัดกระจายของงาน e-commerce กับ logistics operation ลงได้จริง ทีม operation เห็นและจัดการ order จาก Shopee, Lazada และ platform ที่เกี่ยวข้องผ่านหน้าจอเดียว ทั้ง order list, order detail, order status, shipment status และ tracking โดยไม่ต้องวนทำงานเดิมซ้ำในแต่ละ platform
+
+ส่วนนี้ผมขอเล่าแบบระมัดระวัง — งานนี้เป็นงานของทั้งทีม และผมจะไม่ใส่ตัวเลขที่ยืนยันไม่ได้ สิ่งที่พูดได้คือ integration layer รับมือกับความไม่เรียบร้อยของ platform ภายนอกได้ดี ทั้ง token หมดอายุ, response ที่ไม่ตรง spec และ webhook event ที่หาย เพราะเราออกแบบเผื่อ failure mode เหล่านี้ตั้งแต่ต้น ไม่ได้ปล่อยให้เป็น edge case ที่ค่อยมาแก้ทีหลัง
+
+</CaseStudySection>
+
+<CaseStudySection n="06" title="สิ่งที่ได้เรียนรู้">
+
+- **third-party integration ต้องออกแบบแบบ defensive** — ให้ถือว่า API ภายนอกจะมีเซอร์ไพรส์เสมอ ทั้ง field แปลก ๆ ข้อมูลหาย หรือพฤติกรรมที่ขัดกับ document แล้ว handle ให้ชัดเจน อย่าปล่อยให้ error ไหลลึกเข้าไปในระบบ
+- **OAuth และ token refresh คือ core behavior ของระบบ** — ถ้า token หมดอายุแล้วทำให้ order หยุด sync เงียบ ๆ ได้ refresh flow ก็ต้องถูกออกแบบและ monitor จริงจังเท่ากับ feature ธุรกิจ ไม่ใช่มองเป็นแค่เรื่อง login
+- **webhook workflow ต้องมี error handling และ observability ที่ดี** — event มีหาย มาช้า หรือสลับลำดับได้ ถ้าไม่มี log และกลไก reconcile เราจะรู้ปัญหาจากทีม operation ก่อนรู้จากระบบ
+- **ข้อจำกัดของ sandbox กำหนด testing strategy** — เมื่อ sandbox ไม่เหมือน production ต้องวางแผน verify บน production อย่างระมัดระวัง และเตรียมช่องทางดูพฤติกรรมจริงแบบปลอดภัยไว้ล่วงหน้า
+- **integration system ต้องยืดหยุ่น** — แต่ละ platform มีพฤติกรรมไม่เหมือนกันจริง ๆ architecture ต้องรองรับความต่างนั้น ไม่ใช่ตั้งสมมติฐานว่าทุกเจ้าเหมือนกัน
+
+</CaseStudySection>

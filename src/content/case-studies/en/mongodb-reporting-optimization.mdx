@@ -1,0 +1,64 @@
+---
+title: "MongoDB Reporting Optimization"
+subtitle: "Improving aggregation, indexing, and reporting performance for high-volume campaign data."
+locale: "en"
+order: 2
+summary: "A reporting system for campaign messaging and operational dashboards that had to query and aggregate large volumes of campaign-related data — without slow queries, memory-heavy operations, or pagination that collapses at scale."
+challenge: "Aggregation pipelines over large collections — avoiding slow queries, oversized intermediate arrays, $lookup and $facet pitfalls, and inefficient pagination."
+role: "Analyzed real query patterns, redesigned compound indexes, and restructured aggregation pipelines for reporting workloads."
+stack: ["MongoDB", "Mongoose", "NestJS", "Aggregation Pipeline", "Node.js"]
+---
+
+import CaseStudySection from "@/components/CaseStudySection.astro";
+
+<CaseStudySection n="01" title="Context">
+
+This work sits inside a campaign messaging platform. Every campaign that runs produces data: delivery records, status updates, recipient-level outcomes. The reporting layer turns that into campaign summaries, operational dashboards, and per-recipient drill-downs that operations teams check daily.
+
+All of it lives in MongoDB, queried through Mongoose from NestJS services. The collections involved are the largest in the system, and they grow with every campaign sent. My job was to make the reporting layer query and aggregate that data reliably — without slow queries, memory-heavy pipeline stages, or pagination that degrades as the collections grow. The constraint that shaped everything: report data keeps accumulating, so anything that only works at today's volume is already broken.
+
+</CaseStudySection>
+
+<CaseStudySection n="02" title="Problem">
+
+Reporting queries here are aggregation pipelines, and pipelines fail in ways that simple finds do not. A pipeline that behaves fine on a small dev dataset can collapse in production: a `$match` that cannot use an index becomes a collection scan, a `$group` that accumulates documents into arrays grows without bound, and a `$lookup` quietly runs a sub-query for every input document.
+
+Several report queries showed exactly these patterns. Some scanned far more documents than they returned. Some built large intermediate arrays through `$push` and then discarded most of that data in later stages. Pagination relied on skip/limit, which gets slower the deeper a user pages. None of this is visible at low volume — it only surfaces once the collections are large, which is precisely when the reports matter most.
+
+</CaseStudySection>
+
+<CaseStudySection n="03" title="Technical challenges">
+
+- **Slow aggregation on large collections.** Pipelines whose leading `$match` could not use an index fell back to scanning the whole collection, regardless of how small the final result was.
+- **Memory limits on blocking stages.** `$group` and `$sort` buffer documents in memory; spilling to disk is an escape hatch, not a fix.
+- **$facet blow-ups.** Every `$facet` branch receives the entire input stream, and the combined output must fit in a single 16 MB document — convenient for dashboards, dangerous at volume.
+- **$lookup cost.** Each `$lookup` is a sub-query per input document; without an index on the foreign field, the cost multiplies fast.
+- **Oversized intermediate arrays.** Pushing whole documents into per-group arrays risks both memory pressure and the document size limit.
+- **Deep pagination.** skip/limit reads and discards everything before the requested page.
+- **Compound index design.** An index must match both the filter and the sort, in the right field order, or an in-memory sort remains.
+- **Sharded collections.** Queries that do not include the shard key scatter-gather across every shard.
+
+</CaseStudySection>
+
+<CaseStudySection n="04" title="Solution">
+
+I started from the queries themselves — the real filter and sort combinations the report endpoints used — and read explain plans instead of guessing where time went.
+
+Compound indexes were redesigned around those patterns, ordered equality, then sort, then range, so an index like `{ campaignId: 1, status: 1, createdAt: -1 }` serves both the filter and the sort with no in-memory sort stage. Pipelines were restructured to `$match` as early and selectively as possible and to drop unused fields before expensive stages. Where `$push` accumulated whole documents, I switched to counters, `$first`-style accumulators, or window functions (`$setWindowFields`) when ordering actually mattered. `$lookup` stages got filtered sub-pipelines against indexed foreign keys. `$facet` stayed for lightweight summaries and was split apart where branches did real work. Pagination moved to range-based cursors on indexed fields instead of deep skip. For sharded data, I checked that the dominant filters aligned with the shard key so queries target one shard. Every change was weighed against correctness and maintainability, not just speed.
+
+</CaseStudySection>
+
+<CaseStudySection n="05" title="Result">
+
+Report query performance and scalability improved because the indexes, aggregation stages, and data access patterns now line up with how reports are actually queried. That alignment matters more than any single fast query: a pipeline that reads only what it returns scales with the result size rather than the collection size, so report latency tracks what a user asked for instead of how much history the system has accumulated. The behavior stays predictable as campaign data keeps growing, which is the property the reporting layer actually needed.
+
+</CaseStudySection>
+
+<CaseStudySection n="06" title="What I learned">
+
+- **MongoDB performance is strongly tied to query shape.** The same data can be fast or unusable depending on how the pipeline is written. Rewriting the query is usually worth more than upgrading the hardware.
+- **Aggregation design must consider memory and intermediate result size.** Every stage materializes an intermediate result, and you pay for it whether or not it appears in the final output.
+- **Indexes should be designed from access patterns, not guessed.** Explain plans and real query logs beat intuition. An index that almost matches the filter-plus-sort shape is mostly write overhead.
+- **Reporting systems need trade-offs between flexibility and performance.** A report that lets users filter and sort on anything is a report you cannot index well. Constraining those options is a design decision, not a limitation.
+
+</CaseStudySection>

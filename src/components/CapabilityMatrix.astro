@@ -1,0 +1,56 @@
+---
+import type { ExpertiseContent } from "@/data/types";
+
+interface Props {
+  matrix: ExpertiseContent["matrix"];
+}
+
+const { matrix } = Astro.props;
+---
+
+<div data-reveal class="overflow-x-auto rounded-md border border-line-soft">
+  <table class="w-full min-w-[40rem] border-collapse text-left text-sm">
+    <thead>
+      <tr class="border-b border-line bg-ink-900">
+        <th scope="col" class="px-5 py-3 font-mono text-[10px] font-medium tracking-[0.18em] text-dim uppercase">
+          {matrix.columns.area}
+        </th>
+        <th scope="col" class="px-5 py-3 font-mono text-[10px] font-medium tracking-[0.18em] text-dim uppercase">
+          {matrix.columns.depth}
+        </th>
+        <th scope="col" class="px-5 py-3 font-mono text-[10px] font-medium tracking-[0.18em] text-dim uppercase">
+          {matrix.columns.proof}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        matrix.rows.map((row) => (
+          <tr class="border-b border-line-soft last:border-b-0 hover:bg-ink-900/60">
+            <td class="px-5 py-3.5 text-fog">{row.area}</td>
+            <td class="px-5 py-3.5">
+              <span class="rounded border border-line-soft bg-ink-850 px-2 py-0.5 font-mono text-xs text-mist">
+                {row.depth}
+              </span>
+            </td>
+            <td class="px-5 py-3.5">
+              {row.proofHref ? (
+                <a
+                  href={row.proofHref}
+                  class="text-mist underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent-deep"
+                >
+                  {row.proofLabel}
+                </a>
+              ) : (
+                <span class="text-dim">{row.proofLabel}</span>
+              )}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="border-t border-line-soft bg-ink-900/40 px-5 py-2.5 font-mono text-[10px] tracking-wide text-dim">
+    {matrix.depthLegend}
+  </p>
+</div>

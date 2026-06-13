@@ -1,0 +1,20 @@
+---
+/**
+ * Asymmetric layout on purpose: the first (core) group spans the full row,
+ * the rest pair up. Avoids the identical-card-grid look.
+ */
+import type { SkillGroupData } from "@/data/types";
+import SkillGroup from "./SkillGroup.astro";
+
+interface Props {
+  groups: SkillGroupData[];
+}
+
+const { groups } = Astro.props;
+const [core, ...rest] = groups;
+---
+
+<div class="grid gap-4 md:grid-cols-2">
+  {core && <SkillGroup group={core} class="md:col-span-2" />}
+  {rest.map((group) => <SkillGroup group={group} />)}
+</div>

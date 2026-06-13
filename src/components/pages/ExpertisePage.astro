@@ -1,0 +1,46 @@
+---
+import type { Locale } from "@/i18n/config";
+import { getContent } from "@/data/content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import ExpertiseGrid from "@/components/ExpertiseGrid.astro";
+import CapabilityMatrix from "@/components/CapabilityMatrix.astro";
+import CTASection from "@/components/CTASection.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const expertise = getContent(locale).expertise;
+---
+
+<BaseLayout locale={locale} title={expertise.title} description={expertise.lead}>
+  <section class="bg-blueprint border-b border-line-soft">
+    <div class="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:px-8 lg:pt-24 lg:pb-16">
+      <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">01 · {expertise.title}</p>
+      <h1 class="mt-4 max-w-3xl font-display text-3xl leading-tight font-medium tracking-tight text-fog sm:text-4xl lg:text-5xl">
+        {expertise.heading}
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-mist sm:text-lg">{expertise.lead}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:py-16">
+    <ExpertiseGrid groups={expertise.groups} />
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 pb-20 sm:px-8 lg:pb-24">
+    <SectionHeading
+      index={expertise.matrix.index}
+      eyebrow={expertise.matrix.eyebrow}
+      title={expertise.matrix.title}
+      lead={expertise.matrix.lead}
+    />
+    <div class="mt-10">
+      <CapabilityMatrix matrix={expertise.matrix} />
+    </div>
+  </section>
+
+  <CTASection title={expertise.cta.title} body={expertise.cta.body} primary={expertise.cta.primary} />
+</BaseLayout>

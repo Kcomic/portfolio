@@ -1,0 +1,28 @@
+---
+/**
+ * A restrained card: ink panel, hairline border, a single corner tick that
+ * picks up the accent on hover. No blur, no glow halos.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "group relative rounded-md border border-line-soft bg-ink-900/70 p-6 transition-colors duration-300 hover:border-line",
+    className,
+  ]}
+>
+  <span
+    aria-hidden="true"
+    class="absolute top-0 left-0 h-px w-7 bg-line transition-colors duration-300 group-hover:bg-accent"
+  ></span>
+  <span
+    aria-hidden="true"
+    class="absolute top-0 left-0 h-7 w-px bg-line transition-colors duration-300 group-hover:bg-accent"
+  ></span>
+  <slot />
+</div>

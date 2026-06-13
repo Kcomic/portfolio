@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import { caseStudySlug } from "@/lib/caseStudies";
+import type { Locale } from "@/i18n/config";
+import { getContent } from "@/data/content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CaseStudyCard from "@/components/CaseStudyCard.astro";
+import CTASection from "@/components/CTASection.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const page = getContent(locale).caseStudiesPage;
+const cta = getContent(locale).home.cta;
+
+const entries = (await getCollection("caseStudies", ({ data }) => data.locale === locale)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout locale={locale} title={page.title} description={page.lead}>
+  <section class="bg-blueprint border-b border-line-soft">
+    <div class="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:px-8 lg:pt-24 lg:pb-16">
+      <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">{page.title}</p>
+      <h1 class="mt-4 max-w-3xl font-display text-3xl leading-tight font-medium tracking-tight text-fog sm:text-4xl lg:text-5xl">
+        {page.heading}
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-mist sm:text-lg">{page.lead}</p>
+      <p class="mt-6 inline-block border-l-2 border-accent-deep pl-4 font-mono text-xs leading-relaxed text-dim">
+        {page.anonymized}
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:py-16">
+    {
+      entries.map((entry) => (
+        <CaseStudyCard
+          locale={locale}
+          slug={caseStudySlug(entry)}
+          title={entry.data.title}
+          subtitle={entry.data.subtitle}
+          summary={entry.data.summary}
+          challenge={entry.data.challenge}
+          stack={entry.data.stack}
+          order={entry.data.order}
+        />
+      ))
+    }
+  </section>
+
+  <CTASection title={cta.title} body={cta.body} primary={cta.primary} />
+</BaseLayout>

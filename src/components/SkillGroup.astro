@@ -1,0 +1,19 @@
+---
+import type { SkillGroupData } from "@/data/types";
+import TechBadge from "./TechBadge.astro";
+
+interface Props {
+  group: SkillGroupData;
+  class?: string;
+}
+
+const { group, class: className } = Astro.props;
+---
+
+<section data-reveal class:list={["border border-line-soft bg-ink-900/50 p-6 sm:p-7", className]}>
+  <h2 class="font-display text-lg font-medium text-fog">{group.title}</h2>
+  <p class="mt-1.5 text-sm text-dim">{group.note}</p>
+  <div class="mt-5 flex flex-wrap gap-1.5">
+    {group.skills.map((skill) => <TechBadge label={skill} />)}
+  </div>
+</section>

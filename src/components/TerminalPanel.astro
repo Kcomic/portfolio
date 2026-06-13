@@ -1,0 +1,44 @@
+---
+import type { TerminalLine } from "@/data/types";
+
+interface Props {
+  title: string;
+  lines: TerminalLine[];
+  class?: string;
+}
+
+const { title, lines, class: className } = Astro.props;
+
+const toneClass: Record<NonNullable<TerminalLine["tone"]> | "default", string> = {
+  cmd: "text-fog",
+  ok: "text-accent",
+  warn: "text-signal",
+  dim: "text-dim",
+  accent: "text-flow",
+  default: "text-mist",
+};
+---
+
+<div
+  class:list={["overflow-hidden rounded-md border border-line-soft bg-ink-900", className]}
+  role="img"
+  aria-label={title}
+>
+  <div class="flex items-center justify-between border-b border-line-soft px-4 py-2">
+    <p class="flex items-center gap-2 font-mono text-xs text-dim">
+      <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-accent"></span>
+      {title}
+    </p>
+    <span aria-hidden="true" class="font-mono text-[10px] tracking-widest text-dim uppercase">stdout</span>
+  </div>
+  <div class="overflow-x-auto px-4 py-3 font-mono text-[13px] leading-relaxed" aria-hidden="true">
+    {
+      lines.map((line) => (
+        <p class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}>{line.text}</p>
+      ))
+    }
+    <p class="text-dim">
+      <span class="caret-blink text-accent">▌</span>
+    </p>
+  </div>
+</div>

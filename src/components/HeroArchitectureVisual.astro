@@ -1,0 +1,90 @@
+---
+/**
+ * Hand-drawn schematic of the kind of system I actually build:
+ * dashboard + webhooks + external platforms feed an API; work flows through
+ * a queue into a worker pool and database; reporting closes the loop.
+ * Deployment underlies everything. Animated dashes = async data flow.
+ */
+import type { Locale } from "@/i18n/config";
+import ArchitectureNode from "./ArchitectureNode.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const description =
+  locale === "th"
+    ? "แผนภาพสถาปัตยกรรมระบบ: dashboard, webhook และ external platform เชื่อมเข้า API งานไหลผ่าน queue ไปยัง worker pool และ database ส่วน reporting วนกลับไปที่ dashboard ทั้งหมด deploy บน Kubernetes"
+    : "System architecture schematic: a dashboard, webhooks, and external platforms feed an API; jobs flow through a queue into a worker pool and database; reporting loops back to the dashboard; everything is deployed on Kubernetes.";
+
+const labels =
+  locale === "th"
+    ? { sync: "sync", async: "async flow" }
+    : { sync: "sync", async: "async flow" };
+---
+
+<svg
+  viewBox="0 0 640 540"
+  role="img"
+  aria-label={description}
+  class="h-auto w-full select-none"
+>
+  <title>{description}</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--color-accent-deep)"></path>
+    </marker>
+    <marker id="arrow-dim" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--color-ink-700)"></path>
+    </marker>
+  </defs>
+
+  {/* ---- edges (drawn first, under nodes) ---- */}
+  {/* dashboard -> api */}
+  <path d="M 95 74 V 150" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)"></path>
+  {/* api -> queue (enqueue) */}
+  <path d="M 160 172 H 205 V 112 H 244" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  {/* queue -> worker */}
+  <path d="M 320 134 V 204" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  {/* worker -> database */}
+  <path d="M 320 254 V 324" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  {/* webhook -> worker */}
+  <path d="M 160 292 H 205 V 232 H 244" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  {/* external platforms <-> api (REST / OAuth) */}
+  <path d="M 180 390 V 360 H 220 V 194 H 166" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)"></path>
+  {/* database -> reporting */}
+  <path d="M 390 352 H 430 V 232 H 464" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  {/* reporting -> dashboard (closes the loop along the top) */}
+  <path d="M 540 204 V 52 H 166" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)"></path>
+  {/* deployment underpins db / reporting (dotted risers) */}
+  <path d="M 320 378 V 454" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5"></path>
+  <path d="M 540 258 V 454" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5"></path>
+
+  {/* ---- edge labels ---- */}
+  <text x="212" y="100" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">enqueue</text>
+  <text x="330" y="174" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">consume</text>
+  <text x="330" y="294" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">bulk write</text>
+  <text x="228" y="280" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">REST · OAuth 2.0</text>
+  <text x="438" y="296" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">aggregate</text>
+
+  {/* ---- nodes ---- */}
+  <ArchitectureNode x={30} y={30} label="Dashboard" sub="Angular · React" />
+  <ArchitectureNode x={30} y={150} label="API" sub="NestJS · REST" tone="accent" />
+  <ArchitectureNode x={30} y={270} label="Webhook" sub="inbound events" />
+  <ArchitectureNode x={30} y={390} w={150} label="External APIs" sub="Shopee · Lazada · TH Post" />
+  <ArchitectureNode x={250} y={90} w={140} label="Queue / Jobs" sub="agenda · batches" />
+  <ArchitectureNode x={250} y={210} w={140} label="Worker Pool" sub="concurrency ×8" tone="accent" />
+  <ArchitectureNode x={250} y={330} w={140} label="Database" sub="MongoDB · PostgreSQL" />
+  <ArchitectureNode x={470} y={210} w={140} label="Reporting" sub="aggregation pipeline" />
+  <ArchitectureNode x={250} y={454} w={360} label="Deployment" sub="Docker · GitHub Actions · Kubernetes" />
+
+  {/* ---- legend ---- */}
+  <g font-family="var(--font-mono)" font-size="8.5" fill="var(--color-dim)">
+    <line x1="32" y1="500" x2="56" y2="500" stroke="var(--color-ink-700)" stroke-width="1"></line>
+    <text x="62" y="503">{labels.sync}</text>
+    <line x1="110" y1="500" x2="134" y2="500" stroke="var(--color-accent-deep)" stroke-width="1" stroke-dasharray="3 5"></line>
+    <text x="140" y="503">{labels.async}</text>
+  </g>
+</svg>

@@ -1,0 +1,59 @@
+---
+import type { Locale } from "@/i18n/config";
+import { getContent } from "@/data/content";
+import HeroArchitectureVisual from "./HeroArchitectureVisual.astro";
+import TerminalPanel from "./TerminalPanel.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { hero, terminal } = getContent(locale).home;
+---
+
+<section class="bg-blueprint relative border-b border-line-soft">
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 pt-16 pb-14 sm:px-8 lg:grid-cols-12 lg:gap-10 lg:pt-24 lg:pb-20">
+    <div class="min-w-0 lg:col-span-6 lg:self-center">
+      <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">{hero.eyebrow}</p>
+      <h1
+        class="mt-5 font-display text-4xl leading-[1.08] font-medium tracking-tight text-fog sm:text-5xl lg:text-[3.4rem]"
+      >
+        {hero.headline}
+      </h1>
+      <p class="mt-6 max-w-xl text-base leading-relaxed text-mist sm:text-lg">{hero.sub}</p>
+
+      <p class="mt-6 flex items-center gap-2.5 font-mono text-xs text-dim">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:animate-none"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+        </span>
+        {hero.status}
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center gap-3">
+        <a
+          href={hero.primary.href}
+          class="rounded bg-accent px-5 py-2.5 text-sm font-semibold text-ink-950 transition-colors hover:bg-fog"
+        >
+          {hero.primary.label}
+        </a>
+        {
+          hero.secondary.map((cta) => (
+            <a
+              href={cta.href}
+              class="rounded border border-line px-5 py-2.5 text-sm text-mist transition-colors hover:border-accent-deep hover:text-fog"
+            >
+              {cta.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="min-w-0 lg:col-span-6">
+      <HeroArchitectureVisual locale={locale} />
+      <TerminalPanel title={terminal.title} lines={terminal.lines} class="mt-6" />
+    </div>
+  </div>
+</section>

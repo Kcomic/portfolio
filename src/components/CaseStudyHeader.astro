@@ -1,0 +1,51 @@
+---
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import { localizePath } from "@/i18n/utils";
+import TechBadge from "./TechBadge.astro";
+
+interface Props {
+  locale: Locale;
+  title: string;
+  subtitle: string;
+  role: string;
+  stack: string[];
+  order: number;
+}
+
+const { locale, title, subtitle, role, stack, order } = Astro.props;
+const t = useTranslations(locale);
+const n = String(order).padStart(2, "0");
+---
+
+<header class="bg-blueprint border-b border-line-soft">
+  <div class="mx-auto max-w-6xl px-5 pt-12 pb-12 sm:px-8 lg:pt-16 lg:pb-16">
+    <a
+      href={localizePath("/case-studies", locale)}
+      class="font-mono text-xs text-dim transition-colors hover:text-fog"
+    >
+      ← {t("case.back")}
+    </a>
+
+    <div class="mt-8 grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">
+          Case study <span class="text-accent">CS·{n}</span>
+        </p>
+        <h1 class="mt-4 font-display text-3xl leading-tight font-medium tracking-tight text-fog sm:text-4xl lg:text-5xl">
+          {title}
+        </h1>
+        <p class="mt-5 max-w-2xl text-base leading-relaxed text-mist sm:text-lg">{subtitle}</p>
+      </div>
+
+      <aside class="lg:col-span-4 lg:border-l lg:border-line-soft lg:pl-8">
+        <p class="font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{t("case.role")}</p>
+        <p class="mt-2 text-sm leading-relaxed text-mist">{role}</p>
+        <p class="mt-6 font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{t("case.stack")}</p>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {stack.map((item) => <TechBadge label={item} />)}
+        </div>
+      </aside>
+    </div>
+  </div>
+</header>

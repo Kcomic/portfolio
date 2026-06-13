@@ -1,0 +1,68 @@
+---
+title: "Smart Messaging Platform"
+subtitle: "ออกแบบและพัฒนา enterprise campaign messaging platform ที่มี validation, scheduling, delivery และ reporting workflow ที่ต้องรอดใน production จริง"
+locale: "th"
+order: 1
+summary: "ระบบ enterprise messaging platform สำหรับสร้าง campaign, validate ผู้รับ, ตั้งเวลา, ส่ง และดู report — รองรับ manual input, file input, contact selection, validation rules และ background processing ปริมาณมาก"
+challenge: "ประมวลผล campaign input ได้ถึง 1,000,000 record โดยไม่เกิด memory spike และทำให้ scheduling, delivery กับ reporting เชื่อถือได้"
+role: "มีส่วนออกแบบและพัฒนา backend services, validation flow, MongoDB queries, job scheduling logic, report-related logic และ deployment-related improvements"
+stack: ["NestJS", "Angular", "MongoDB", "Mongoose", "Agenda", "Node.js", "Docker", "Kubernetes", "GitHub Actions"]
+---
+
+import CaseStudySection from "@/components/CaseStudySection.astro";
+
+<CaseStudySection n="01" title="ที่มา">
+
+ระบบนี้เป็น enterprise messaging platform ที่ครอบคลุมทั้ง lifecycle ของ campaign ตั้งแต่สร้าง campaign, validate ผู้รับ, ตั้งเวลา, ส่งข้อความ ไปจนถึงดู report ตัว campaign สร้างได้หลายทาง ทั้งกรอกเอง (manual input), upload file หรือเลือกจาก contact และ group ที่มีอยู่ในระบบ ซึ่งทุกทางต้องผ่าน validation rules ชุดเดียวกันก่อนส่งจริง
+
+เบื้องหลังประกอบด้วย backend หลาย service และงานหนักส่วนใหญ่ทำผ่าน background processing ผมมีส่วนออกแบบและพัฒนาฝั่ง backend เป็นหลัก ตั้งแต่ validation flow, MongoDB queries, job scheduling logic, logic ฝั่ง report ไปจนถึงการปรับ deployment flow ระบบนี้มีลูกค้าใช้งานจริงใน production อยู่แล้ว การแก้อะไรก็ตามจึงต้องไม่กระทบ campaign ที่กำลังวิ่งอยู่
+
+</CaseStudySection>
+
+<CaseStudySection n="02" title="โจทย์">
+
+ความยากของระบบนี้ไม่ได้อยู่ที่จำนวน feature เพราะ campaign creation, scheduling, delivery แต่ละเรื่องแยกกันถือเป็นปัญหาที่มีแนวทางอยู่แล้ว ความยากจริงคือ campaign เดียวอาจมีผู้รับมากถึง 1,000,000 record และ workflow ทั้งเส้นต้องเชื่อถือได้ที่ขนาดนั้น
+
+ถ้าทำแบบตรงไปตรงมา คืออ่าน file ทั้งก้อนเข้า memory แล้ว validate รวดเดียว ระบบจะมีปัญหาใน production แน่นอน นอกจากนี้ scheduling ต้องเริ่มงานตรงเวลาแม้ job จะใหญ่ ฝั่ง report ต้อง aggregate ผลการส่งจากข้อมูลปริมาณมากโดยไม่ timeout และทั้งหมดนี้กระจายอยู่บนหลาย service ที่ deploy แยกกันบน Kubernetes ซึ่งการแก้พลาดที่ service หนึ่งอาจไปพัง pipeline ของอีก service โดยไม่รู้ตัว
+
+</CaseStudySection>
+
+<CaseStudySection n="03" title="ความท้าทายทางเทคนิค">
+
+- **ขนาดของ input** — campaign เดียวรองรับได้ถึง 1,000,000 record ทั้งจาก file, manual input และ contact selection
+- **การคุม memory** — ประมวลผล file โดยไม่โหลดข้อมูลทั้งก้อนเข้า memory เพราะ upload ใหญ่ครั้งเดียวไม่ควรทำให้ service ล่ม
+- **Validation rules** — ต้องเช็ครูปแบบเบอร์โทร, template variable, ข้อมูลซ้ำ และความถูกต้องของ campaign input ก่อนส่งทุกครั้ง
+- **Scheduling ที่เชื่อถือได้** — job ขนาดใหญ่ต้องเริ่มตรงเวลา และต้องไปต่อได้แม้ service restart กลางทาง
+- **ปริมาณข้อมูลฝั่ง report** — ต้อง aggregate ผลการส่งจาก collection ขนาดใหญ่โดยไม่เจอ slow query
+- **หลาย backend service** — ต้องดูแลหลาย service ให้ทำงานสอดคล้องกันเมื่อระบบโตขึ้น
+- **Deploy บน Kubernetes อย่างปลอดภัย** — rollout ต้องไม่กระทบ campaign ที่กำลังส่งอยู่
+- **Business rules เปลี่ยนบ่อย** — validation และ delivery flow ต้องแก้ตามเงื่อนไขธุรกิจใหม่ได้โดยไม่พังของเดิม
+
+</CaseStudySection>
+
+<CaseStudySection n="04" title="แนวทางที่ใช้">
+
+ผมเลือกไม่ rewrite ระบบ แต่ลงแรงกับ data flow แทน โดยยังใช้ backend เป็น NestJS services เหมือนเดิม ฝั่ง validation ถูกจัดเป็น preparation pipeline ที่ชัดเจน คืออ่านข้อมูลเป็น chunk, validate, ตัดข้อมูลซ้ำ แล้วเตรียมไว้ก่อนส่ง ทำให้ manual input, file input และ contact selection ใช้ pipeline เดียวกันได้
+
+งานที่ใช้เวลานานย้ายไปทำใน background job และแบ่ง workload ใหญ่ออกเป็น batch ขนาดที่คุมได้ memory จึงคงที่ไม่ว่า input จะใหญ่แค่ไหน trade-off คือมีเรื่องต้องจัดการเพิ่ม ทั้ง job state, ขอบเขตของ batch และจุด resume แต่สิ่งเหล่านี้คือสิ่งที่ทำให้ retry ได้อย่างปลอดภัย
+
+ฝั่ง database ผมออกแบบ index ตาม query ที่ใช้จริง เช่น `{ campaignId: 1, status: 1 }` และจัด aggregation ให้ `$match` กรองข้อมูลตั้งแต่ stage แรกแทนการ group ทั้ง collection ส่วน deployment ปรับเป็น flow ที่ทำซ้ำได้ คือ build Docker image ผ่าน GitHub Actions แล้ว rollout ขึ้น Kubernetes อย่างเป็นขั้นตอน
+
+</CaseStudySection>
+
+<CaseStudySection n="05" title="ผลลัพธ์">
+
+ช่วยให้ campaign processing และ reporting workflow scale ได้ดีขึ้น ดูแลต่อได้ง่ายขึ้น และพร้อมสำหรับการใช้งานใน production มากขึ้น
+
+การประมวลผลแบบ batch ทำให้ขนาดของ input ไม่ได้เป็นตัวกำหนด memory usage อีกต่อไป campaign ใหญ่จึงดูแลในเชิง operation ได้เหมือน campaign เล็ก validation pipeline ทำให้ทีมแก้ business rules ได้ที่จุดเดียวแทนการไล่แก้หลาย service และ deployment flow ที่ใช้ Docker, Kubernetes กับ GitHub Actions ทำให้การ deploy แต่ละครั้งไม่ใช่เรื่องเสี่ยงเหมือนก่อน
+
+</CaseStudySection>
+
+<CaseStudySection n="06" title="สิ่งที่ได้เรียนรู้">
+
+- **การ process input จำนวนมากต้องคิดเรื่อง memory ตั้งแต่ตอน design** — การทำ chunk และ batch ตั้งแต่แรกมีต้นทุนต่ำมาก เทียบกับการมาตามแก้หลังเจอปัญหาใน production แล้ว
+- **Background job ต้องออกแบบโดยคิดถึง failure, retry และ resume ก่อน** — job ที่ทำงานได้เฉพาะกรณีปกติ สุดท้ายจะทิ้ง campaign ที่ส่งค้างครึ่งทางไว้ จุด resume สำคัญกว่าความเร็วดิบ
+- **Reporting performance ขึ้นกับ data model และ query pattern เป็นหลัก** — การออกแบบ index และโครงสร้าง aggregation ให้ผลมากกว่าการเพิ่ม hardware
+- **Enterprise system ต้องดูแลต่อได้ ไม่ใช่แค่เร็ว** — business rules เปลี่ยนเร็วกว่าปริมาณข้อมูลที่โต โครงสร้างที่ทำให้แก้ validation ได้อย่างปลอดภัยจึงมีค่าไม่น้อยกว่า optimization
+
+</CaseStudySection>

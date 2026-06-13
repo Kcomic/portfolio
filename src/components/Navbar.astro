@@ -1,0 +1,106 @@
+---
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import { getBasePath, localizePath } from "@/i18n/utils";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const basePath = getBasePath(Astro.url.pathname);
+
+const links = [
+  { base: "/about", label: t("nav.about") },
+  { base: "/case-studies", label: t("nav.caseStudies") },
+  { base: "/expertise", label: t("nav.expertise") },
+  { base: "/contact", label: t("nav.contact") },
+];
+
+const isActive = (base: string) => basePath === base || basePath.startsWith(`${base}/`);
+---
+
+<header class="sticky top-0 z-40 border-b border-line-soft bg-ink-950/90 backdrop-blur-sm">
+  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+    <a
+      href={localizePath("/", locale)}
+      class="group flex items-baseline font-mono text-sm text-fog"
+      aria-label={t("nav.home")}
+    >
+      bawonsak<span class="text-dim">.</span>p
+      <span aria-hidden="true" class="caret-blink ml-0.5 text-accent">_</span>
+    </a>
+
+    <nav aria-label={t("nav.main")} class="hidden items-center gap-7 md:flex">
+      {
+        links.map(({ base, label }) => (
+          <a
+            href={localizePath(base, locale)}
+            aria-current={isActive(base) ? "page" : undefined}
+            class:list={[
+              "text-sm transition-colors",
+              isActive(base) ? "text-fog" : "text-mist hover:text-fog",
+            ]}
+          >
+            {isActive(base) && <span aria-hidden="true" class="mr-1 text-accent">/</span>}
+            {label}
+          </a>
+        ))
+      }
+      <LanguageSwitcher locale={locale} />
+    </nav>
+
+    <div class="flex items-center gap-4 md:hidden">
+      <LanguageSwitcher locale={locale} />
+      <button
+        id="nav-toggle"
+        type="button"
+        class="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded border border-line-soft"
+        aria-expanded="false"
+        aria-controls="nav-mobile"
+        aria-label={t("nav.open")}
+      >
+        <span class="block h-px w-4 bg-fog transition-transform"></span>
+        <span class="block h-px w-4 bg-fog transition-transform"></span>
+      </button>
+    </div>
+  </div>
+
+  <nav
+    id="nav-mobile"
+    aria-label={t("nav.main")}
+    hidden
+    class="border-t border-line-soft bg-ink-950 px-5 py-4 md:hidden"
+  >
+    <ul class="flex flex-col gap-1 font-mono text-sm">
+      {
+        links.map(({ base, label }) => (
+          <li>
+            <a
+              href={localizePath(base, locale)}
+              aria-current={isActive(base) ? "page" : undefined}
+              class:list={[
+                "block rounded px-2 py-2.5",
+                isActive(base) ? "bg-ink-900 text-accent" : "text-mist",
+              ]}
+            >
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const menu = document.getElementById("nav-mobile");
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!open));
+    if (menu) menu.hidden = open;
+  });
+</script>

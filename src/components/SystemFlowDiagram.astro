@@ -1,0 +1,34 @@
+---
+/**
+ * The thinking pipeline as a metro-style rail: numbered stations on a single
+ * line, because the order is the point.
+ */
+import type { FlowStep } from "@/data/types";
+
+interface Props {
+  steps: FlowStep[];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="relative ml-1.5 border-l border-line">
+  {
+    steps.map((step, i) => (
+      <li data-reveal class="relative pb-9 pl-8 last:pb-0">
+        <span
+          aria-hidden="true"
+          class:list={[
+            "absolute top-1 -left-[5px] h-[9px] w-[9px] rounded-full border",
+            i === 0 ? "border-accent bg-accent" : "border-line bg-ink-950",
+          ]}
+        />
+        <p class="font-mono text-xs text-dim">
+          {String(i + 1).padStart(2, "0")}
+        </p>
+        <h3 class="mt-1 font-display text-base font-medium text-fog sm:text-lg">{step.title}</h3>
+        <p class="mt-1 max-w-xl text-sm leading-relaxed text-mist">{step.desc}</p>
+      </li>
+    ))
+  }
+</ol>

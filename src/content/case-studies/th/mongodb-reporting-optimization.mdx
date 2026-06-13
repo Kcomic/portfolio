@@ -1,0 +1,64 @@
+---
+title: "MongoDB Reporting Optimization"
+subtitle: "ปรับ aggregation, indexing และ reporting query สำหรับข้อมูล campaign ปริมาณมาก"
+locale: "th"
+order: 2
+summary: "ระบบ reporting สำหรับ campaign messaging และ operational dashboard ที่ต้อง query และ aggregate ข้อมูลปริมาณมาก โดยไม่เจอ slow query, operation ที่กิน memory หนัก หรือ pagination ที่พังเมื่อข้อมูลโต"
+challenge: "aggregation pipeline บน collection ขนาดใหญ่ — เลี่ยง slow query, intermediate array ที่ใหญ่เกิน, จุดอ่อนของ $lookup กับ $facet และ pagination ที่ไม่มีประสิทธิภาพ"
+role: "วิเคราะห์ query pattern จริง ออกแบบ compound index ใหม่ และปรับโครงสร้าง aggregation pipeline สำหรับงาน reporting"
+stack: ["MongoDB", "Mongoose", "NestJS", "Aggregation Pipeline", "Node.js"]
+---
+
+import CaseStudySection from "@/components/CaseStudySection.astro";
+
+<CaseStudySection n="01" title="ที่มา">
+
+งานนี้อยู่ในระบบ reporting ของ campaign messaging platform ทุกครั้งที่ campaign ทำงาน จะมีข้อมูลเกิดขึ้นตามมาเสมอ ทั้ง delivery record, status update และผลลัพธ์รายผู้รับ ฝั่ง reporting ต้องสรุปข้อมูลพวกนี้เป็น campaign summary, operational dashboard และหน้า drill-down รายผู้รับ ที่ทีม operation เปิดดูทุกวัน
+
+ข้อมูลทั้งหมดอยู่ใน MongoDB query ผ่าน Mongoose จาก NestJS service โดย collection ที่เกี่ยวข้องเป็น collection ที่ใหญ่ที่สุดในระบบ และโตขึ้นตามทุก campaign ที่ส่งออกไป โจทย์ของผมคือทำให้ reporting layer query และ aggregate ข้อมูลพวกนี้ได้อย่างน่าเชื่อถือ โดยไม่เจอ slow query, pipeline stage ที่กิน memory หนัก หรือ pagination ที่ช้าลงเรื่อย ๆ เมื่อข้อมูลโต ข้อจำกัดที่กำหนดทุกอย่างคือ ข้อมูล report สะสมเพิ่มตลอดเวลา อะไรที่รอดแค่ปริมาณข้อมูลวันนี้ ถือว่าพังไปแล้วครึ่งหนึ่ง
+
+</CaseStudySection>
+
+<CaseStudySection n="02" title="โจทย์">
+
+report query ในระบบนี้คือ aggregation pipeline ซึ่งพังคนละแบบกับ find ธรรมดา pipeline ที่ทำงานได้ดีบนข้อมูล dev ชุดเล็ก พอเจอข้อมูล production จริงอาจช้าจนใช้ไม่ได้ เช่น `$match` ที่ไม่ได้ใช้ index จะกลายเป็น collection scan, `$group` ที่ accumulate document เข้า array จะโตแบบไม่มีเพดาน และ `$lookup` จะแอบยิง sub-query ต่อ document ทุกตัวที่ไหลเข้ามา
+
+report หลายตัวในระบบมี pattern แบบนี้จริง บางตัว scan document มากกว่าที่ตอบกลับหลายเท่า บางตัวสร้าง intermediate array ขนาดใหญ่ผ่าน `$push` แล้วทิ้งข้อมูลส่วนใหญ่ไปใน stage ถัดมา ส่วน pagination ใช้ skip/limit ซึ่งยิ่งผู้ใช้เปิดหน้าลึกยิ่งช้า ปัญหาพวกนี้มองไม่เห็นตอนข้อมูลน้อย แต่จะโผล่มาตอน collection ใหญ่ ซึ่งเป็นจังหวะที่ report สำคัญที่สุดพอดี
+
+</CaseStudySection>
+
+<CaseStudySection n="03" title="ความท้าทายทางเทคนิค">
+
+- **slow aggregation บน collection ขนาดใหญ่** — pipeline ที่ `$match` ตัวแรกใช้ index ไม่ได้ จะถอยไป scan ทั้ง collection ไม่ว่าผลลัพธ์สุดท้ายจะเล็กแค่ไหน
+- **memory limit ของ blocking stage** — `$group` และ `$sort` ต้อง buffer document ใน memory การ spill ลง disk เป็นทางหนีฉุกเฉิน ไม่ใช่ทางแก้
+- **จุดอ่อนของ $facet** — ทุก branch ใน `$facet` รับ input ทั้งก้อนชุดเดียวกัน และผลรวมต้องอยู่ใน document เดียวที่จำกัด 16 MB สะดวกสำหรับ dashboard แต่อันตรายเมื่อข้อมูลใหญ่
+- **ต้นทุนของ $lookup** — `$lookup` คือ sub-query ต่อ input document ทุกตัว ถ้า foreign field ไม่มี index ต้นทุนจะคูณขึ้นเร็วมาก
+- **intermediate array ที่ใหญ่เกิน** — การ `$push` ทั้ง document เข้า array ต่อ group เสี่ยงทั้ง memory และ limit ขนาด document
+- **pagination หน้าลึก** — skip/limit ต้องอ่านแล้วทิ้งทุกอย่างที่อยู่ก่อนหน้าหน้าที่ขอ
+- **การออกแบบ compound index** — index ต้องตรงทั้ง filter และ sort ในลำดับ field ที่ถูกต้อง ไม่อย่างนั้นจะเหลือ in-memory sort อยู่ดี
+- **เรื่อง sharded collection** — query ที่ไม่มี shard key จะ scatter-gather ไปทุก shard
+
+</CaseStudySection>
+
+<CaseStudySection n="04" title="แนวทางที่ใช้">
+
+ผมเริ่มจาก query จริง ไม่ใช่การเดา — ดึง filter กับ sort ที่ report endpoint ใช้งานจริง แล้วไล่อ่าน explain plan ว่าเวลาหายไปที่ไหน
+
+จากนั้นออกแบบ compound index ใหม่ตาม pattern พวกนั้น เรียง field แบบ equality ก่อน ตามด้วย sort แล้วค่อย range เพื่อให้ index เดียวอย่าง `{ campaignId: 1, status: 1, createdAt: -1 }` รองรับทั้ง filter และ sort โดยไม่ต้องมี in-memory sort ฝั่ง pipeline ปรับให้ `$match` อยู่ต้นทางและ selective ที่สุด แล้วตัด field ที่ไม่ใช้ทิ้งก่อนถึง stage ที่แพง จุดที่ `$push` ทั้ง document เข้า array ถูกแทนด้วย counter, accumulator แบบ `$first` หรือ window function (`$setWindowFields`) ในเคสที่ลำดับสำคัญจริง `$lookup` ถูกบีบให้แคบลงด้วย sub-pipeline ที่ filter ก่อน และชี้ไปที่ foreign key ที่มี index ส่วน `$facet` เก็บไว้ใช้กับ summary เบา ๆ และแยกออกเป็น query ต่างหากเมื่อ branch ทำงานหนัก pagination เปลี่ยนเป็น cursor แบบ range บน field ที่มี index แทนการ skip ลึก ๆ และสำหรับข้อมูลที่ shard ผมเช็คว่า filter หลักตรงกับ shard key เพื่อให้ query ลงที่ shard เดียว ทุกการเปลี่ยนแปลงผ่านการชั่งน้ำหนักระหว่างความถูกต้อง, performance และการดูแลต่อในระยะยาว
+
+</CaseStudySection>
+
+<CaseStudySection n="05" title="ผลลัพธ์">
+
+report query scale ได้ดีขึ้นและคาดเดาได้มากขึ้น เพราะ index, aggregation stage และ data access pattern ถูก align ให้ตรงกับการใช้งานจริง การ align ตรงนี้สำคัญกว่าการทำให้ query ตัวใดตัวหนึ่งเร็ว เพราะ pipeline ที่อ่านเฉพาะข้อมูลที่ต้องตอบ จะ scale ตามขนาดผลลัพธ์ ไม่ใช่ขนาด collection ความเร็วของ report จึงขึ้นกับสิ่งที่ผู้ใช้ขอดู ไม่ใช่ปริมาณข้อมูลที่ระบบสะสมมาทั้งหมด และพฤติกรรมยังนิ่งแม้ข้อมูล campaign จะเพิ่มขึ้นต่อเนื่อง
+
+</CaseStudySection>
+
+<CaseStudySection n="06" title="สิ่งที่ได้เรียนรู้">
+
+- **MongoDB performance ผูกกับ query shape โดยตรง** — ข้อมูลชุดเดียวกันจะเร็วหรือใช้ไม่ได้เลย ขึ้นกับวิธีเขียน pipeline การแก้ query มักคุ้มกว่าการเพิ่มสเปคเครื่อง
+- **aggregation ต้องคิดเรื่อง memory และ intermediate result size** — ทุก stage มีผลลัพธ์กลางที่ต้องจ่ายต้นทุน แม้มันจะไม่โผล่ใน output สุดท้ายก็ตาม
+- **index ควรออกแบบจาก access pattern จริง ไม่ใช่เดา** — explain plan กับ query log จริงชนะการคาดเดาเสมอ index ที่เกือบตรงกับ filter บวก sort คือภาระตอน write มากกว่าประโยชน์ตอน read
+- **reporting system ต้อง trade-off ระหว่าง flexibility กับ performance** — report ที่ให้ user filter และ sort ได้ทุกอย่าง คือ report ที่ออกแบบ index ให้ดีไม่ได้ การจำกัดตัวเลือกเป็นการตัดสินใจเชิง design ไม่ใช่ข้อจำกัดของระบบ
+
+</CaseStudySection>

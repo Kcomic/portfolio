@@ -1,0 +1,65 @@
+---
+title: "E-commerce Order Consolidator"
+subtitle: "An order management system that consolidates multiple e-commerce platforms into a single operational workflow."
+locale: "en"
+order: 3
+summary: "A system that centralized orders from Shopee, Lazada, and related seller platforms into one place — order lists, order detail, order status, shipment status, and Thailand Post logistics workflows."
+challenge: "Integrating multiple platform APIs with different order formats, OAuth 2.0 token lifecycles, webhook behaviors, and incomplete sandbox environments into one reliable workflow."
+role: "Worked on frontend and backend implementation, authentication flow, platform API integration, webhook handling, and order and shipment workflows."
+stack: ["React / Next.js", "Node.js", "Express.js", "SQL database", "REST API", "OAuth 2.0", "Webhooks", "Shopee API", "Lazada API", "Thailand Post API"]
+---
+
+import CaseStudySection from "@/components/CaseStudySection.astro";
+
+<CaseStudySection n="01" title="Context">
+
+This was an order consolidator system that pulled orders from multiple seller platforms into a single operational system. Sellers and operations staff used it to work with order lists, order detail, order status, shipment status, and logistics workflows from one place instead of logging into each platform separately.
+
+The platform context included Shopee, Lazada, and Shopat24 / 24Shopping where applicable, plus a Thailand Post integration for shipment and pickup-related workflows. I worked on the system as part of a team, contributing to frontend and backend implementation, the authentication flow, platform API integration, webhook handling, and the order and shipment workflows. The focus here is on the integration problems and how we approached them.
+
+</CaseStudySection>
+
+<CaseStudySection n="02" title="Problem">
+
+Running an e-commerce operation across several seller platforms means the same conceptual work — check new orders, confirm them, arrange shipment, track parcels — is scattered across separate consoles that behave differently. Each platform has its own API, its own order format, its own shipment flow, its own authorization behavior, and its own way of pushing status updates.
+
+In practice that meant operators switched between platforms all day, and any process that spanned platforms — like preparing a day's shipments for Thailand Post pickup — had to be stitched together manually. The goal was to reduce that fragmentation: integrate the platform data into one system and give operators a single order management workflow, without pretending the platforms were more similar than they actually were.
+
+</CaseStudySection>
+
+<CaseStudySection n="03" title="Technical challenges">
+
+- **Multiple platform APIs.** Each platform exposed orders differently — field names, status models, pagination, and rate limits all varied, so nothing could be integrated generically.
+- **OAuth 2.0 token lifecycles.** Each platform required its own authorization flow, with access tokens and refresh tokens that expired on different schedules and failed in different ways.
+- **Webhook behavior.** Order and status events arrived as webhooks from external systems, with no guarantee of ordering and occasional gaps that had to be detected and reconciled.
+- **Thailand Post integration.** Logistics workflows — shipment creation, tracking codes, status updates — had to connect to a separate API with its own conventions.
+- **Inconsistent API behavior.** Real responses did not always match documentation, so error handling had to be defensive rather than optimistic.
+- **Limited sandboxes.** Sandbox environments were incomplete or behaved differently from production, which directly shaped how we could test end-to-end Shopee and Lazada flows.
+
+</CaseStudySection>
+
+<CaseStudySection n="04" title="Solution">
+
+We built a centralized order management workflow on top of a per-platform integration layer. Each platform connector spoke REST with OAuth 2.0, owned its own token refresh logic, and translated platform-specific order payloads into a normalized internal order model. Normalizing at ingestion was a deliberate trade-off: it cost effort up front for every new platform, but it kept the order, shipment, and UI logic free of platform-specific branching.
+
+Webhooks drove status updates where the platforms supported them, with API calls used to reconcile state when events were missed — we treated webhooks as a fast path, not a source of truth. Shipment workflows connected to the Thailand Post API for tracking codes and logistics updates. Order and platform data lived in a relational SQL design, and the frontend gave operators practical flows over the consolidated data: order lists, order detail, status changes, and shipment handling in one place.
+
+</CaseStudySection>
+
+<CaseStudySection n="05" title="Result">
+
+The system helped centralize multi-platform order operations and reduced operational fragmentation across e-commerce and logistics workflows. Operators could see and act on orders from Shopee, Lazada, and related platforms in one interface — order lists, order detail, order status, shipment status, and tracking — instead of repeating the same routine in each platform's own console.
+
+I'll keep the claims conservative here. This was a team effort, and I won't attach numbers I can't verify to it. What I can say is that the integration layer held up against the messier realities of third-party platforms — token expiry, inconsistent responses, missed webhook events — because we designed for those failure modes from the start rather than treating them as edge cases.
+
+</CaseStudySection>
+
+<CaseStudySection n="06" title="What I learned">
+
+- **Third-party integration needs defensive design.** Assume external APIs will return surprises — unexpected fields, missing data, behavior that contradicts the docs — and handle them explicitly instead of letting them propagate.
+- **OAuth and token refresh are core system behavior.** When expired tokens can silently stop order syncing, refresh flows deserve the same design and monitoring attention as any business-critical feature, not just-a-login treatment.
+- **Webhook workflows need strong error handling and observability.** Events get lost, arrive late, or arrive out of order; without logging and reconciliation you find out from operators, not from the system.
+- **Sandbox limitations shape testing strategy.** When the sandbox doesn't match production, you have to plan for careful production verification and build in ways to observe real behavior safely.
+- **Integration systems must stay flexible.** Every platform behaves differently, and the architecture has to absorb those differences rather than assume them away.
+
+</CaseStudySection>

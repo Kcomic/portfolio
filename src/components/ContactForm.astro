@@ -1,0 +1,85 @@
+---
+/**
+ * Static-site honest contact form: builds a mailto: draft client-side.
+ * No fake backend, no third-party form service.
+ */
+import type { ContactContent } from "@/data/types";
+import { site } from "@/data/site";
+
+interface Props {
+  form: ContactContent["form"];
+}
+
+const { form } = Astro.props;
+
+const fieldClass =
+  "w-full rounded border border-line-soft bg-ink-900 px-3.5 py-2.5 text-sm text-fog placeholder:text-dim focus:border-accent-deep focus:outline-none";
+const labelClass = "block font-mono text-xs tracking-wide text-mist";
+---
+
+<form id="contact-form" class="grid gap-5 sm:grid-cols-2" data-email={site.email}>
+  <div>
+    <label for="cf-name" class={labelClass}>{form.name}</label>
+    <input id="cf-name" name="name" type="text" required autocomplete="name" class:list={["mt-2", fieldClass]} />
+  </div>
+  <div>
+    <label for="cf-email" class={labelClass}>{form.email}</label>
+    <input id="cf-email" name="email" type="email" required autocomplete="email" class:list={["mt-2", fieldClass]} />
+  </div>
+  <div>
+    <label for="cf-company" class={labelClass}>{form.company}</label>
+    <input id="cf-company" name="company" type="text" autocomplete="organization" class:list={["mt-2", fieldClass]} />
+  </div>
+  <div>
+    <label for="cf-type" class={labelClass}>{form.projectType}</label>
+    <select id="cf-type" name="projectType" class:list={["mt-2", fieldClass]}>
+      {form.projectTypes.map((option) => <option value={option}>{option}</option>)}
+    </select>
+  </div>
+  <div class="sm:col-span-2">
+    <label for="cf-message" class={labelClass}>{form.message}</label>
+    <textarea id="cf-message" name="message" rows="5" required class:list={["mt-2", fieldClass]}></textarea>
+  </div>
+  <div class="sm:col-span-2">
+    <button
+      type="submit"
+      class="rounded bg-accent px-6 py-2.5 text-sm font-semibold text-ink-950 transition-colors hover:bg-fog"
+    >
+      {form.submit}
+    </button>
+    <p class="mt-3 text-xs leading-relaxed text-dim">{form.note}</p>
+  </div>
+</form>
+
+<noscript>
+  {/* Without JS the form would GET-submit field values into the URL; hide it
+      and leave only the direct mailto link. */}
+  <style is:inline>
+    #contact-form {
+      display: none;
+    }
+  </style>
+  <p class="mt-4 font-mono text-sm text-mist">
+    → <a href={`mailto:${site.email}`} class="text-accent underline underline-offset-4">{site.email}</a>
+  </p>
+</noscript>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const get = (key: string) => String(data.get(key) ?? "").trim();
+    const subject = `[${get("projectType")}] ${get("name")}${get("company") ? " — " + get("company") : ""}`;
+    const body = [
+      `Name: ${get("name")}`,
+      `Email: ${get("email")}`,
+      `Company: ${get("company") || "-"}`,
+      `Project type: ${get("projectType")}`,
+      "",
+      get("message"),
+    ].join("\r\n");
+    const email = form.dataset.email ?? "";
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

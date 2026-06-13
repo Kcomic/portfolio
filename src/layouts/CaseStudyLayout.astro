@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import { localizePath } from "@/i18n/utils";
+import BaseLayout from "./BaseLayout.astro";
+import CaseStudyHeader from "@/components/CaseStudyHeader.astro";
+import CTASection from "@/components/CTASection.astro";
+import { getContent } from "@/data/content";
+
+interface Props {
+  entry: CollectionEntry<"caseStudies">;
+  next?: { slug: string; title: string } | null;
+}
+
+const { entry, next } = Astro.props;
+const { title, subtitle, locale, role, stack, order, summary } = entry.data;
+const t = useTranslations(locale as Locale);
+const cta = getContent(locale as Locale).home.cta;
+---
+
+<BaseLayout locale={locale as Locale} title={title} description={summary}>
+  <article>
+    <CaseStudyHeader
+      locale={locale as Locale}
+      title={title}
+      subtitle={subtitle}
+      role={role}
+      stack={stack}
+      order={order}
+    />
+
+    <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 lg:py-16">
+      <slot />
+
+      {
+        next && (
+          <nav aria-label={t("case.next")} class="mt-16 border-t border-line pt-8">
+            <p class="font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{t("case.next")}</p>
+            <a
+              href={localizePath(`/case-studies/${next.slug}`, locale as Locale)}
+              class="group mt-2 inline-block font-display text-xl font-medium text-fog transition-colors hover:text-accent"
+            >
+              {next.title}
+              <span aria-hidden="true" class="ml-1 inline-block transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          </nav>
+        )
+      }
+    </div>
+  </article>
+
+  <CTASection title={cta.title} body={cta.body} primary={cta.primary} />
+</BaseLayout>

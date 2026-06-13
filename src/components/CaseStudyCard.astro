@@ -1,0 +1,56 @@
+---
+/**
+ * A case study as a dossier row, not a thumbnail card:
+ * index — title/summary — challenge/stack. The whole row is clickable.
+ */
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import { localizePath } from "@/i18n/utils";
+import TechBadge from "./TechBadge.astro";
+
+interface Props {
+  locale: Locale;
+  slug: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  challenge: string;
+  stack: string[];
+  order: number;
+}
+
+const { locale, slug, title, subtitle, summary, challenge, stack, order } = Astro.props;
+const t = useTranslations(locale);
+const href = localizePath(`/case-studies/${slug}`, locale);
+const n = String(order).padStart(2, "0");
+---
+
+<article data-reveal class="group relative grid gap-5 border-t border-line py-9 md:grid-cols-12 md:gap-8">
+  <div class="md:col-span-2">
+    <p class="font-mono text-xs text-dim">
+      CS<span class="text-accent">·</span>{n}
+    </p>
+  </div>
+
+  <div class="md:col-span-6">
+    <h3 class="font-display text-xl font-medium tracking-tight text-fog transition-colors group-hover:text-accent sm:text-2xl">
+      <a href={href} class="before:absolute before:inset-0 before:content-['']">{title}</a>
+    </h3>
+    <p class="mt-2 text-sm text-mist">{subtitle}</p>
+    <p class="mt-4 max-w-prose text-sm leading-relaxed text-dim">{summary}</p>
+    <p class="mt-5 font-mono text-xs text-mist">
+      {t("case.read")}
+      <span aria-hidden="true" class="ml-1 inline-block transition-transform group-hover:translate-x-1">→</span>
+    </p>
+  </div>
+
+  <div class="md:col-span-4">
+    <p class="font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{t("case.challenge")}</p>
+    <p class="mt-2 text-sm leading-relaxed text-mist">{challenge}</p>
+    <p class="mt-5 font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{t("case.stack")}</p>
+    <div class="mt-2 flex flex-wrap gap-1.5">
+      {stack.slice(0, 6).map((item) => <TechBadge label={item} />)}
+      {stack.length > 6 && <span class="font-mono text-xs text-dim">+{stack.length - 6}</span>}
+    </div>
+  </div>
+</article>
