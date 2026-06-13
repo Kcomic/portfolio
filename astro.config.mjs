@@ -4,8 +4,11 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
-// TODO: change to the real domain before going live (also update README + robots.txt).
-const SITE = "https://bawonsak.dev";
+// Resolved at build time so the deploy's real origin flows into every absolute
+// URL (canonical, hreflang, OG/Twitter image, sitemap, robots). On Cloudflare
+// Pages set SITE_URL (Production env) to your custom domain; preview deploys
+// fall back to Cloudflare's per-deploy CF_PAGES_URL automatically.
+const SITE = process.env.SITE_URL ?? process.env.CF_PAGES_URL ?? "http://localhost:4321";
 
 export default defineConfig({
   site: SITE,

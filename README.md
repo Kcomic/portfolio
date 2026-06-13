@@ -43,7 +43,7 @@ npm run preview    # serve dist/ locally
 
 ## Before going live — checklist
 
-- [ ] `astro.config.mjs` → change `SITE` to your real domain (canonical/hreflang/OG URLs depend on it).
+- [ ] Cloudflare Pages → Settings → **Environment variables** → add `SITE_URL` (Production scope) = your custom domain, e.g. `https://example.com`. Every absolute URL (canonical/hreflang/OG/sitemap/robots) derives from it. Preview deploys auto-use `CF_PAGES_URL`, so leave `SITE_URL` unset for Preview.
 - [ ] `src/data/site.ts` → replace the **GitHub / LinkedIn placeholder URLs**.
 - [x] `public/og.png` (1200×630) is included. To regenerate after editing `public/og.svg`, render the SVG at 1200×630 and export as PNG.
 

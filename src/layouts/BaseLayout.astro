@@ -23,7 +23,7 @@ const t = useTranslations(locale);
 const pageTitle = title ? seo[locale].titleTemplate(title) : seo[locale].title;
 const pageDescription = description ?? seo[locale].description;
 
-const siteOrigin = Astro.site ?? new URL("https://bawonsak.dev");
+const siteOrigin = Astro.site ?? new URL("http://localhost:4321");
 const basePath = getBasePath(Astro.url.pathname);
 const alternates = buildAlternates(basePath, siteOrigin);
 const canonical = alternates.find((a) => a.hreflang === locale)?.href;
