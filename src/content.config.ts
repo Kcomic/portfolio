@@ -1,12 +1,14 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 const caseStudies = defineCollection({
-  loader: glob({ pattern: "**/*.mdx", base: "./src/content/case-studies" }),
+  // Scoped to locale folders so the id always carries a valid locale prefix
+  // (see caseStudyLocale); a stray top-level .mdx is then simply not a case study.
+  loader: glob({ pattern: "{en,th}/**/*.mdx", base: "./src/content/case-studies" }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
-    locale: z.enum(["en", "th"]),
     order: z.number(),
     /** One-paragraph context shown on cards. */
     summary: z.string(),

@@ -24,9 +24,14 @@
   --color-signal: oklch(84% 0.115 85); /* amber — terminal warnings only */
   --color-flow: oklch(76% 0.07 230); /* desaturated blue — diagram secondary */
 
-  --font-display: "Space Grotesk Variable", "IBM Plex Sans Thai", ui-sans-serif, sans-serif;
-  --font-sans: "IBM Plex Sans", "IBM Plex Sans Thai", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Compose the multi-script stacks from the Astro Fonts API variables (see
+   * astro.config.mjs). The Thai face follows the Latin one so Thai glyphs in
+   * the /th routes fall through to it per-glyph, with one generic at the end. */
+  --font-display: var(--font-space-grotesk), var(--font-ibm-plex-sans-thai), sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), var(--font-ibm-plex-sans-thai), sans-serif;
+  /* Thai has no monospace face; route Thai glyphs in mono labels to the Thai
+   * sans so they stay on-brand instead of dropping to a system font. */
+  --font-mono: var(--font-ibm-plex-mono), var(--font-ibm-plex-sans-thai), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }

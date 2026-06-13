@@ -1,14 +1,6 @@
 ---
-import "@fontsource-variable/space-grotesk";
-import "@fontsource/ibm-plex-sans/400.css";
-import "@fontsource/ibm-plex-sans/500.css";
-import "@fontsource/ibm-plex-sans/600.css";
-import "@fontsource/ibm-plex-sans-thai/400.css";
-import "@fontsource/ibm-plex-sans-thai/500.css";
-import "@fontsource/ibm-plex-sans-thai/600.css";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
 import "@/styles/global.css";
+import { Font } from "astro:assets";
 
 import type { Locale } from "@/i18n/config";
 import { useTranslations } from "@/i18n/ui";
@@ -43,10 +35,21 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Preload only the above-the-fold hero (display) face. The rest load with
+        font-display: swap and show the plain generic until ready — fallbacks:[]
+        in astro.config.mjs means no metric-adjusted fallback face is generated,
+        so preloading every weight would only compete for bandwidth. */}
+    <Font cssVariable="--font-space-grotesk" preload />
+    <Font cssVariable="--font-ibm-plex-sans" />
+    <Font cssVariable="--font-ibm-plex-sans-thai" />
+    <Font cssVariable="--font-ibm-plex-mono" />
+
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <meta name="author" content={site.name} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="canonical" href={canonical} />
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <meta name="generator" content={Astro.generator} />

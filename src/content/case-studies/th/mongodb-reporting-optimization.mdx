@@ -1,7 +1,6 @@
 ---
 title: "MongoDB Reporting Optimization"
 subtitle: "ปรับ aggregation, indexing และ reporting query สำหรับข้อมูล campaign ปริมาณมาก"
-locale: "th"
 order: 2
 summary: "ระบบ reporting สำหรับ campaign messaging และ operational dashboard ที่ต้อง query และ aggregate ข้อมูลปริมาณมาก โดยไม่เจอ slow query, operation ที่กิน memory หนัก หรือ pagination ที่พังเมื่อข้อมูลโต"
 challenge: "aggregation pipeline บน collection ขนาดใหญ่ — เลี่ยง slow query, intermediate array ที่ใหญ่เกิน, จุดอ่อนของ $lookup กับ $facet และ pagination ที่ไม่มีประสิทธิภาพ"

@@ -10,13 +10,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.0.0",
-    "@fontsource-variable/space-grotesk": "^5.2.0",
-    "@fontsource/ibm-plex-mono": "^5.2.0",
-    "@fontsource/ibm-plex-sans": "^5.2.0",
-    "@fontsource/ibm-plex-sans-thai": "^5.2.0",
-    "@tailwindcss/vite": "^4.1.0",
-    "astro": "^5.13.0",
-    "tailwindcss": "^4.1.0"
+    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.4.6",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
+  },
+  "comment:overrides": "REQUIRED — do not remove. Pins Vite to Astro 6's v7 line. @tailwindcss/vite's peer allows Vite 8 (the current `latest`), so without this npm installs a second, rolldown-based Vite 8 next to Astro's Vite 7 and the build fails with 'Missing field tsconfigPaths on BindingViteResolvePluginConfig'. A clean reinstall does NOT fix it. Drop only once Astro and @tailwindcss/vite agree on one Vite major.",
+  "overrides": {
+    "vite": "^7.3.2"
   }
 }

@@ -1,6 +1,5 @@
 ---
-import { getCollection } from "astro:content";
-import { caseStudySlug } from "@/lib/caseStudies";
+import { caseStudySlug, getCaseStudies } from "@/lib/caseStudies";
 import type { Locale } from "@/i18n/config";
 import { getContent } from "@/data/content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -15,9 +14,7 @@ const { locale } = Astro.props;
 const page = getContent(locale).caseStudiesPage;
 const cta = getContent(locale).home.cta;
 
-const entries = (await getCollection("caseStudies", ({ data }) => data.locale === locale)).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const entries = await getCaseStudies(locale);
 ---
 
 <BaseLayout locale={locale} title={page.title} description={page.lead}>
