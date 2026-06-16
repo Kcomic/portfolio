@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="ui-monospace, Menlo, monospace">
+  <!-- Source artwork for the OG image. Lives outside public/ so it is NOT shipped.
+       To regenerate public/og.png: render this SVG at 1200x630 and export as PNG. -->
+  <rect width="1200" height="630" fill="#101521"/>
+  <g stroke="#1d2535" stroke-width="1">
+    <path d="M0 105 H1200 M0 210 H1200 M0 315 H1200 M0 420 H1200 M0 525 H1200"/>
+    <path d="M150 0 V630 M300 0 V630 M450 0 V630 M600 0 V630 M750 0 V630 M900 0 V630 M1050 0 V630"/>
+  </g>
+
+  <!-- node motif tucked into the top-right corner, clear of all text -->
+  <path d="M1000 80 L1110 80 M1055 80 V160 M1000 160 H1110" fill="none" stroke="#27433c" stroke-width="2"/>
+  <circle cx="1000" cy="80" r="7" fill="#101521" stroke="#55e0b1" stroke-width="3"/>
+  <circle cx="1110" cy="80" r="7" fill="#101521" stroke="#55e0b1" stroke-width="3"/>
+  <circle cx="1055" cy="160" r="7" fill="#101521" stroke="#55e0b1" stroke-width="3"/>
+
+  <text x="100" y="276" fill="#55e0b1" font-size="20" letter-spacing="3">WEB APPLICATION CONSULTANT · BACKEND SPECIALIST</text>
+  <text x="100" y="344" fill="#e8eaf0" font-size="52" font-family="'Space Grotesk', sans-serif">Bawonsak Petchbunjerdkul</text>
+  <text x="100" y="402" fill="#8b93a7" font-size="26">Complete web applications — backend-deep, production-ready</text>
+  <text x="100" y="524" fill="#5c647a" font-size="21">React · Next.js · NestJS · PostgreSQL · Docker · Kubernetes</text>
+</svg>

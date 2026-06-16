@@ -24,7 +24,7 @@ export const ui = {
     "case.context": "Context",
     "case.challenge": "Key challenge",
     "footer.tagline":
-      "Backend systems and integrations, built for the teams that have to operate them.",
+      "Web applications from UI to deploy — backend-deep, production-ready — built for the teams that operate them.",
     "footer.colophon": "Designed and built by hand — Astro + Tailwind, no template.",
     "footer.email": "Email",
     "home.viewAll": "View all case studies",
@@ -51,7 +51,7 @@ export const ui = {
     "case.context": "ที่มา",
     "case.challenge": "โจทย์หลัก",
     "footer.tagline":
-      "ระบบ backend, enterprise platform และ integration ที่ใช้งานจริงใน production",
+      "web application ตั้งแต่ UI ถึง deploy — จุดแข็งที่ backend และ production — สร้างเพื่อทีมที่ต้องดูแลมันต่อ",
     "footer.colophon": "ออกแบบและเขียนเองทั้งหมด — Astro + Tailwind ไม่ใช้ template",
     "footer.email": "อีเมล",
     "home.viewAll": "ดู case studies ทั้งหมด",

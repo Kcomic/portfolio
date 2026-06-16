@@ -4,10 +4,10 @@ import { site } from "./site";
 export const en: LocaleContent = {
   home: {
     hero: {
-      eyebrow: "Bawonsak Petchbunjerdkul · Senior Software Developer",
-      headline: "I build backend systems that handle real production complexity.",
-      sub: "Messaging platforms, order consolidators, reporting pipelines, and internal tools — designed and built with NestJS, MongoDB, PostgreSQL, Docker, and Kubernetes. And I stay around after the deploy to keep them running.",
-      status: "Bangkok · UTC+7 · open to consulting & freelance",
+      eyebrow: "Web Application Consultant · Backend Specialist",
+      headline: "I build complete web applications — strongest in backend and production.",
+      sub: "Frontend, API, database, deployment, and the on-call that follows — I take web systems end to end, then stay to keep them running. Messaging platforms, order consolidators, reporting pipelines, internal tools — built with NestJS, React, Next.js, Angular, MongoDB, PostgreSQL, Docker, and Kubernetes.",
+      status: "Bangkok · UTC+7 · open to client projects, consulting & roles",
       primary: { label: "View case studies", href: "/case-studies/" },
       secondary: [
         { label: "Explore expertise", href: "/expertise/" },
@@ -29,7 +29,7 @@ export const en: LocaleContent = {
       index: "01",
       eyebrow: "What I build",
       title: "The systems I get asked to build, again and again",
-      lead: "Systems that other people operate, that move real data, and that someone has to maintain after I'm done.",
+      lead: "The screens people use, the API behind them, and the data and ops that keep them alive — web systems other people operate, not demos.",
       items: [
         {
           title: "Messaging platforms",
@@ -88,7 +88,7 @@ export const en: LocaleContent = {
         },
         {
           title: "Enterprise Product Engineering",
-          body: "Software that other people have to operate and extend. Maintainability, observability, and technical decisions that can still be explained six months later.",
+          body: "Shipping complete products other people operate and extend — UI, API, and the operations behind them. Maintainability, observability, and technical decisions that can still be explained six months later.",
         },
       ],
     },
@@ -167,11 +167,11 @@ export const en: LocaleContent = {
 
   about: {
     title: "About",
-    heading: "A backend engineer who stays after the deploy.",
+    heading: "I build complete web systems — and I don't leave at deploy.",
     paragraphs: [
-      `I'm a Senior Software Developer at ${site.company.replace(" Co., Ltd.", "")}, focused on backend engineering, system architecture, enterprise software, and production operations.`,
+      `I'm a software engineer and consultant. I design and build web applications end to end — frontend, API, database, and the deployment and operations behind them — and I go deepest where it gets hard: backend, large data, integration, and production. I'm currently a developer at ${site.company.replace(" Co., Ltd.", "")} and take on client projects alongside that.`,
       "Most of my work lives where systems get difficult: large data volumes, complex workflows, background processing, third-party integration, database performance, and the constraints that only show up after deployment.",
-      "I've designed and built messaging platforms, campaign and scheduling systems, reporting and validation pipelines, and e-commerce order consolidation with Shopee, Lazada, and Thailand Post integration. Some of those systems I still operate — which keeps me honest about the decisions I made building them.",
+      "I've built messaging platforms, campaign and scheduling systems, reporting and validation pipelines, and an e-commerce order consolidator — operator dashboards and all — integrating Shopee, Lazada, and Thailand Post. Some of those systems I still run, which keeps me honest about the decisions I made building them.",
     ],
     fits: {
       title: "I work well on systems that involve",
@@ -197,8 +197,8 @@ export const en: LocaleContent = {
       ],
     },
     direction: {
-      title: "Where I'm heading",
-      body: "Tech Lead, Backend Architect, CTO-track roles, and software consulting. The common thread: owning technical decisions end to end, and being accountable for how they behave in production.",
+      title: "What I'm open to",
+      body: "Client projects and senior or lead roles, equally. The throughline isn't a job title — it's owning technical decisions end to end and being accountable for how they behave in production.",
     },
     engagement: {
       index: "02",
@@ -254,7 +254,7 @@ export const en: LocaleContent = {
     groups: [
       {
         title: "Backend Engineering",
-        note: "The core of my work — services that carry the business.",
+        note: "Where I go deepest — services that carry the business.",
         skills: [
           "NestJS",
           "Node.js",
@@ -274,7 +274,7 @@ export const en: LocaleContent = {
       },
       {
         title: "Frontend Engineering",
-        note: "Enough to ship complete products — dashboards, admin tools, operational UIs.",
+        note: "Production frontends for the systems I build — dashboards, admin tools, operational UIs.",
         skills: [
           "Angular",
           "React",
@@ -411,7 +411,7 @@ export const en: LocaleContent = {
   contact: {
     title: "Contact",
     heading: "Let's talk about your system.",
-    lead: "I'm open to backend engineering, enterprise system development, internal tools, integration platforms, system architecture review, and technical consulting projects.",
+    lead: "I take on web applications, backend and integration-heavy systems, internal tools, architecture reviews, and technical consulting — whether you need a full build or backend depth on an existing product.",
     emailLabel: "Email me directly",
     socialsLabel: "Elsewhere",
     form: {
@@ -422,6 +422,7 @@ export const en: LocaleContent = {
       company: "Company",
       projectType: "Project type",
       projectTypes: [
+        "Full Web Application",
         "Backend System",
         "Enterprise Internal Tool",
         "E-commerce / API Integration",

@@ -3,7 +3,7 @@ import type { Locale } from "@/i18n/config";
 export const site = {
   name: "Bawonsak Petchbunjerdkul",
   shortName: "Bawonsak P.",
-  role: "Senior Software Developer",
+  role: "Web Application Consultant · Backend Specialist",
   company: "Entronica Co., Ltd.",
   email: "bawonsak.p@entronica.co.th",
   location: "Bangkok, Thailand",
@@ -18,15 +18,15 @@ export const seo: Record<
   { title: string; description: string; titleTemplate: (page: string) => string }
 > = {
   en: {
-    title: "Bawonsak Petchbunjerdkul | Senior Software Developer",
+    title: "Bawonsak Petchbunjerdkul | Web Application Consultant · Backend Specialist",
     description:
-      "Senior Software Developer specializing in enterprise backend systems, scalable platforms, system integration, MongoDB, PostgreSQL, NestJS, Angular, React, Next.js, Docker, and Kubernetes.",
+      "I design and build web applications — UI, API, database, deployment, and the operations after — with backend and production reliability as my core strength. Full-stack development with NestJS, Node.js, Express, React, Next.js, Angular, MongoDB, PostgreSQL, Docker, and Kubernetes.",
     titleTemplate: (page) => `${page} — Bawonsak Petchbunjerdkul`,
   },
   th: {
-    title: "Bawonsak Petchbunjerdkul | Senior Software Developer",
+    title: "Bawonsak Petchbunjerdkul | Web Application Consultant · Backend Specialist",
     description:
-      "Senior Software Developer ที่เชี่ยวชาญ enterprise backend systems, scalable platforms, system integration, MongoDB, PostgreSQL, NestJS, Angular, React, Next.js, Docker และ Kubernetes",
+      "ผมออกแบบและพัฒนา web application ตั้งแต่ UI, API, database, การ deploy ไปจนถึงการดูแลหลังขึ้น production โดยมีจุดแข็งที่ backend และความน่าเชื่อถือใน production ทำงาน full-stack ด้วย NestJS, Node.js, Express, React, Next.js, Angular, MongoDB, PostgreSQL, Docker และ Kubernetes",
     titleTemplate: (page) => `${page} — Bawonsak Petchbunjerdkul`,
   },
 };

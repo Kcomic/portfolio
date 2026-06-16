@@ -3,10 +3,10 @@ import type { LocaleContent } from "./types";
 export const th: LocaleContent = {
   home: {
     hero: {
-      eyebrow: "Bawonsak Petchbunjerdkul · Senior Software Developer",
-      headline: "ผมสร้างระบบ backend, enterprise platform และ integration system ที่ใช้งานจริงใน production",
-      sub: "ออกแบบและพัฒนา messaging platform, order consolidator, reporting pipeline และ internal tool ด้วย NestJS, MongoDB, PostgreSQL, Docker และ Kubernetes — และอยู่ดูแลระบบต่อหลัง deploy",
-      status: "กรุงเทพฯ · UTC+7 · รับงาน consulting และ freelance",
+      eyebrow: "Web Application Consultant · Backend Specialist",
+      headline: "ผมพัฒนา web application ได้ทั้งระบบ — จุดแข็งอยู่ที่ backend และ production",
+      sub: "ตั้งแต่ frontend, API, database, การ deploy ไปจนถึงการดูแลระบบหลังขึ้น production — ผมทำ web system เองทั้งกระบวนการ แล้วอยู่ดูแลต่อ ทั้ง messaging platform, order consolidator, reporting pipeline และ internal tool ด้วย NestJS, React, Next.js, Angular, MongoDB, PostgreSQL, Docker และ Kubernetes",
+      status: "กรุงเทพฯ · UTC+7 · รับงานโปรเจกต์, consulting และ role",
       primary: { label: "ดู Case Studies", href: "/th/case-studies/" },
       secondary: [
         { label: "ดูความเชี่ยวชาญ", href: "/th/expertise/" },
@@ -28,7 +28,7 @@ export const th: LocaleContent = {
       index: "01",
       eyebrow: "งานที่ผมสร้าง",
       title: "ระบบที่มีคนขอให้ผมสร้างอยู่เรื่อย ๆ",
-      lead: "ไม่ใช่ demo แต่เป็นระบบที่มีคนใช้งานจริง มีข้อมูลจริงวิ่งผ่าน และต้องมีคนดูแลต่อหลังจากผมส่งมอบ",
+      lead: "ตั้งแต่หน้าจอที่คนใช้ API เบื้องหลัง ไปจนถึงข้อมูลและการดูแลที่ทำให้มันอยู่รอด — เป็นซอฟต์แวร์ที่คนอื่นใช้งานจริง ไม่ใช่ demo",
       items: [
         {
           title: "Messaging Platform",
@@ -87,7 +87,7 @@ export const th: LocaleContent = {
         },
         {
           title: "Enterprise Product Engineering",
-          body: "ซอฟต์แวร์ที่ทีมอื่นต้องดูแลต่อและต่อยอดได้ เน้น maintainability, observability และ technical decision ที่ยังอธิบายเหตุผลได้หลังผ่านไปครึ่งปี",
+          body: "ส่งมอบ product ครบทั้งก้อนที่ทีมอื่นดูแลและต่อยอดได้ — ทั้ง UI, API และการดูแลเบื้องหลัง เน้น maintainability, observability และ technical decision ที่ยังอธิบายเหตุผลได้หลังผ่านไปครึ่งปี",
         },
       ],
     },
@@ -166,11 +166,11 @@ export const th: LocaleContent = {
 
   about: {
     title: "เกี่ยวกับผม",
-    heading: "Backend engineer ที่อยู่ดูแลระบบต่อหลัง deploy",
+    heading: "ผมทำ web system ได้ทั้งก้อน — และไม่หายไปตอน deploy",
     paragraphs: [
-      "ผมเป็น Senior Software Developer ที่ Entronica โฟกัสงาน backend engineering, system architecture, enterprise software และ production operations",
+      "ผมเป็น software engineer และที่ปรึกษา ออกแบบและพัฒนา web application ตั้งแต่ frontend, API, database ไปจนถึงการ deploy และดูแลระบบเบื้องหลัง โดยลงลึกที่สุดในส่วนที่ยาก: backend, ข้อมูลปริมาณมาก, integration และ production ตอนนี้ผมเป็น developer ที่ Entronica และรับงานโปรเจกต์ของลูกค้าควบคู่ไปด้วย",
       "งานส่วนใหญ่ของผมอยู่ตรงจุดที่ระบบเริ่มยาก — ข้อมูลจำนวนมาก, workflow ที่ซับซ้อน, background processing, integration กับระบบภายนอก, database performance และข้อจำกัดที่โผล่มาหลัง deploy เท่านั้น",
-      "ผมเคยออกแบบและพัฒนา messaging platform, ระบบ campaign และ scheduling, reporting และ validation pipeline รวมถึงระบบรวม order จาก Shopee, Lazada และ integration กับ Thailand Post — บางระบบผมยังดูแลอยู่จนถึงตอนนี้ จึงต้องอยู่กับผลของทุกการตัดสินใจที่ทำไว้ตั้งแต่ตอนสร้างมัน",
+      "ผมเคยออกแบบและพัฒนา messaging platform, ระบบ campaign และ scheduling, reporting และ validation pipeline รวมถึงระบบรวม order จาก Shopee, Lazada — พร้อม dashboard สำหรับผู้ใช้งาน — และ integration กับ Thailand Post บางระบบผมยังดูแลอยู่จนถึงตอนนี้ จึงต้องอยู่กับผลของทุกการตัดสินใจที่ทำไว้ตั้งแต่ตอนสร้างมัน",
     ],
     fits: {
       title: "ระบบแบบไหนที่ผมถนัด",
@@ -196,8 +196,8 @@ export const th: LocaleContent = {
       ],
     },
     direction: {
-      title: "ทิศทางต่อไปของผม",
-      body: "Tech Lead, Backend Architect, เส้นทาง CTO และงาน software consulting — จุดร่วมคือการเป็นเจ้าของ technical decision ตั้งแต่ต้นจนจบ และรับผิดชอบผลของมันใน production",
+      title: "สิ่งที่ผมเปิดรับ",
+      body: "ทั้งงานโปรเจกต์ของลูกค้าและ senior/lead role พอ ๆ กัน จุดร่วมไม่ใช่ตำแหน่ง แต่คือการเป็นเจ้าของ technical decision ตั้งแต่ต้นจนจบ และรับผิดชอบกับผลที่เกิดใน production",
     },
     engagement: {
       index: "02",
@@ -253,7 +253,7 @@ export const th: LocaleContent = {
     groups: [
       {
         title: "Backend Engineering",
-        note: "แกนหลักของงานผม — service ที่แบกธุรกิจไว้",
+        note: "จุดที่ผมลงลึกที่สุด — service ที่แบกธุรกิจไว้",
         skills: [
           "NestJS",
           "Node.js",
@@ -273,7 +273,7 @@ export const th: LocaleContent = {
       },
       {
         title: "Frontend Engineering",
-        note: "พอที่จะส่งมอบ product ทั้งตัวได้ — dashboard, admin tool และ operational UI",
+        note: "frontend ระดับ production สำหรับระบบที่ผมสร้าง — dashboard, admin tool และ operational UI",
         skills: [
           "Angular",
           "React",
@@ -410,7 +410,7 @@ export const th: LocaleContent = {
   contact: {
     title: "ติดต่อ",
     heading: "คุยเรื่องระบบของคุณกันครับ",
-    lead: "ผมเปิดรับงาน backend engineering, enterprise system development, internal tools, integration platform, system architecture review และ technical consulting",
+    lead: "ผมรับงานพัฒนา web application, งาน backend และ integration, internal tool, architecture review และ technical consulting — ไม่ว่าจะสร้างใหม่ทั้งก้อน หรือเสริม backend ให้ของที่มีอยู่แล้ว",
     emailLabel: "อีเมลหาผมโดยตรง",
     socialsLabel: "ช่องทางอื่น",
     form: {
@@ -421,6 +421,7 @@ export const th: LocaleContent = {
       company: "บริษัท",
       projectType: "ประเภทโปรเจกต์",
       projectTypes: [
+        "Full Web Application",
         "Backend System",
         "Enterprise Internal Tool",
         "E-commerce / API Integration",
