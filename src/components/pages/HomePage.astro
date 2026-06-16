@@ -1,6 +1,8 @@
 ---
 import { caseStudySlug, getCaseStudies } from "@/lib/caseStudies";
 import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import { localizePath } from "@/i18n/utils";
 import { getContent } from "@/data/content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Hero from "@/components/Hero.astro";
@@ -16,16 +18,21 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const t = useTranslations(locale);
 const { build, strengths, caseStudies, stack, thinking, cta } = getContent(locale).home;
 
-const entries = await getCaseStudies(locale);
+// Home features a curated subset (lowest `order`); the full set lives on
+// /case-studies. The "View all" link bridges the two and scales as more are added.
+const FEATURED_LIMIT = 3;
+const allEntries = await getCaseStudies(locale);
+const entries = allEntries.slice(0, FEATURED_LIMIT);
 ---
 
 <BaseLayout locale={locale}>
   <Hero locale={locale} />
 
   {/* 01 — What I build: editorial two-column list, not a card wall */}
-  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+  <section data-scroll-anchor="build" class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
     <SectionHeading index={build.index} eyebrow={build.eyebrow} title={build.title} lead={build.lead} />
     <ul class="mt-12 grid gap-x-12 md:grid-cols-2">
       {
@@ -38,7 +45,7 @@ const entries = await getCaseStudies(locale);
               <span class="font-mono text-xs text-dim">{String(i + 1).padStart(2, "0")}</span>
               <div>
                 <h3 class="font-display text-base font-medium text-fog">{item.title}</h3>
-                <p class="mt-1.5 text-sm leading-relaxed text-mist">{item.note}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-dim">{item.note}</p>
               </div>
             </div>
           </li>
@@ -48,7 +55,7 @@ const entries = await getCaseStudies(locale);
   </section>
 
   {/* 02 — Core strengths: offset grid, second column pushed down */}
-  <section class="border-y border-line-soft bg-ink-900/30">
+  <section data-scroll-anchor="strengths" class="border-y border-line-soft bg-ink-900/30">
     <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
       <SectionHeading index={strengths.index} eyebrow={strengths.eyebrow} title={strengths.title} />
       <div class="mt-12 grid gap-5 md:grid-cols-2 lg:gap-6">
@@ -67,7 +74,7 @@ const entries = await getCaseStudies(locale);
   </section>
 
   {/* 03 — Selected case studies */}
-  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+  <section data-scroll-anchor="case-studies" class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
     <SectionHeading
       index={caseStudies.index}
       eyebrow={caseStudies.eyebrow}
@@ -90,10 +97,16 @@ const entries = await getCaseStudies(locale);
         ))
       }
     </div>
+    <a
+      href={localizePath("/case-studies", locale)}
+      class="mt-4 inline-block font-mono text-sm text-mist transition-colors hover:text-accent"
+    >
+      {t("home.viewAll")} →
+    </a>
   </section>
 
   {/* 04 — Stack: compact grouped badges */}
-  <section class="border-y border-line-soft bg-ink-900/30">
+  <section data-scroll-anchor="stack" class="border-y border-line-soft bg-ink-900/30">
     <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
       <SectionHeading index={stack.index} eyebrow={stack.eyebrow} title={stack.title} lead={stack.lead} />
       <div class="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -114,7 +127,7 @@ const entries = await getCaseStudies(locale);
   </section>
 
   {/* 05 — System thinking */}
-  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+  <section data-scroll-anchor="system-thinking" class="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
     <div class="grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-5">
         <SectionHeading index={thinking.index} eyebrow={thinking.eyebrow} title={thinking.title} lead={thinking.lead} />

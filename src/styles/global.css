@@ -50,6 +50,13 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* Hide the page only while a language-switch scroll restore is pending, so it
+     never paints at the top before the restore runs. The class is added in
+     <head> (before first paint) and cleared by the body-end restore script. */
+  html.lang-restoring body {
+    visibility: hidden;
+  }
+
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-ink-950);

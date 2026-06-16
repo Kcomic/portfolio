@@ -10,7 +10,7 @@ interface Props {
 const { n, title } = Astro.props;
 ---
 
-<section class="mt-14 first:mt-0">
+<section data-scroll-anchor={`case-study-${n}`} class="mt-14 first:mt-0">
   <div class="flex items-baseline gap-3 border-b border-line-soft pb-3">
     <span class="font-mono text-xs text-accent">{n}</span>
     <h2 class="font-display text-xl font-medium tracking-tight text-fog sm:text-2xl">{title}</h2>

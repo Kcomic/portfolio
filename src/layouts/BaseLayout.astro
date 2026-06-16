@@ -36,6 +36,20 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    {/* If a language switch is pending, hide the page before first paint so it
+        never flashes at the top before the body-end script restores scroll.
+        Revealed by that script (or DOMContentLoaded as a failsafe). */}
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem("langScroll")) {
+          document.documentElement.classList.add("lang-restoring");
+          addEventListener("DOMContentLoaded", function () {
+            document.documentElement.classList.remove("lang-restoring");
+          });
+        }
+      } catch (e) {}
+    </script>
+
     {/* Preload the two faces guaranteed above the fold: the display face (H1)
         and the body face (hero sub-paragraph + CTA buttons). Mono is only small
         labels; the Thai face is unicode-range scoped and never loads on EN — so
@@ -83,6 +97,74 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
     </main>
 
     <Footer locale={locale} />
+
+    {/* Preserve scroll across a language switch. EN/TH pages are structurally
+        identical, so we record the named [data-scroll-anchor] nearest the top of
+        the content (+ its offset) before navigating, and reproduce it on the
+        translated page. is:inline + non-deferred so the restore runs during parse
+        (before paint) and clears the .lang-restoring guard the head set — no
+        flash. Only fires when langScroll exists (set on a [data-lang-link] click),
+        so normal navigation and native Back/Forward restoration are untouched.
+        Plain JS (no TS) because is:inline ships verbatim. */}
+    <script is:inline>
+      (function () {
+        var HEADER = 56; // sticky navbar height (h-14)
+
+        // Capture on a language-switch click, before the browser navigates.
+        document.addEventListener(
+          "click",
+          function (event) {
+            var target = event.target;
+            var link = target && target.closest ? target.closest("[data-lang-link]") : null;
+            if (!link) return;
+            var anchors = Array.prototype.slice.call(document.querySelectorAll("[data-scroll-anchor]"));
+            var current = anchors[0] || null;
+            var off = (current ? current.getBoundingClientRect().top : HEADER) - HEADER;
+            for (var i = 0; i < anchors.length; i++) {
+              var top = anchors[i].getBoundingClientRect().top - HEADER;
+              if (top <= 1) { current = anchors[i]; off = top; } else break;
+            }
+            sessionStorage.setItem(
+              "langScroll",
+              JSON.stringify({
+                key: current ? current.dataset.scrollAnchor : null,
+                off: off,
+                y: window.scrollY,
+                sh: document.documentElement.scrollHeight,
+              }),
+            );
+          },
+          true,
+        );
+
+        // Restore on arrival, if we just switched language.
+        var raw = sessionStorage.getItem("langScroll");
+        if (raw) {
+          sessionStorage.removeItem("langScroll");
+          var html = document.documentElement;
+          var prev = html.style.scrollBehavior;
+          html.style.scrollBehavior = "auto"; // override global scroll-behavior: smooth
+          try {
+            var s = JSON.parse(raw);
+            var key = s.key && window.CSS && CSS.escape ? CSS.escape(s.key) : s.key;
+            var el = s.key ? document.querySelector('[data-scroll-anchor="' + key + '"]') : null;
+            var dest;
+            if (el) {
+              dest = el.getBoundingClientRect().top + window.scrollY - HEADER - s.off;
+            } else {
+              var max = html.scrollHeight - window.innerHeight;
+              dest = s.sh > window.innerHeight ? (s.y / (s.sh - window.innerHeight)) * max : s.y;
+            }
+            window.scrollTo(0, Math.max(0, Math.round(dest)));
+          } catch (e) {
+            /* malformed payload — ignore, page stays at top */
+          } finally {
+            html.style.scrollBehavior = prev;
+            html.classList.remove("lang-restoring"); // reveal now that scroll is set
+          }
+        }
+      })();
+    </script>
 
     <script>
       // Scroll reveal — progressive enhancement; content is visible without JS

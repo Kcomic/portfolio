@@ -11,7 +11,7 @@ interface Props {
 const { title, body, primary } = Astro.props;
 ---
 
-<section class="mx-auto max-w-6xl px-5 sm:px-8">
+<section data-scroll-anchor="cta" class="mx-auto max-w-6xl px-5 sm:px-8">
   <div data-reveal class="bg-blueprint relative overflow-hidden rounded-md border border-line bg-ink-900/60 px-6 py-12 sm:px-12 sm:py-16">
     <h2 class="max-w-xl font-display text-2xl font-medium tracking-tight text-fog sm:text-3xl">{title}</h2>
     <p class="mt-4 max-w-xl text-base leading-relaxed text-mist">{body}</p>

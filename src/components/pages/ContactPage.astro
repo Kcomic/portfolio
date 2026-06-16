@@ -14,7 +14,7 @@ const contact = getContent(locale).contact;
 ---
 
 <BaseLayout locale={locale} title={contact.title} description={contact.lead}>
-  <section class="bg-blueprint border-b border-line-soft">
+  <section data-scroll-anchor="contact-intro" class="bg-blueprint border-b border-line-soft">
     <div class="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:px-8 lg:pt-24 lg:pb-16">
       <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">{contact.title}</p>
       <h1 class="mt-4 max-w-3xl font-display text-3xl leading-tight font-medium tracking-tight text-fog sm:text-4xl lg:text-5xl">
@@ -24,7 +24,7 @@ const contact = getContent(locale).contact;
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:py-16">
+  <section data-scroll-anchor="contact-form" class="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:py-16">
     <div class="grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
         <h2 class="font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{contact.emailLabel}</h2>

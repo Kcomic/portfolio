@@ -30,6 +30,7 @@ const targets: { code: Locale; label: string }[] = [
           <a
             href={switchLocalePath(pathname, code)}
             title={t("lang.switchTo")}
+            data-lang-link
             class="inline-flex min-h-9 items-center px-1 text-dim transition-colors hover:text-fog"
           >
             {label}
