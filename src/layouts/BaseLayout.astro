@@ -15,9 +15,11 @@ interface Props {
   /** Page title without the site suffix; omit for the global home title. */
   title?: string;
   description?: string;
+  /** Enable the first-visit hero "boot-up" entrance (home page only). */
+  boot?: boolean;
 }
 
-const { locale, title, description } = Astro.props;
+const { locale, title, description, boot } = Astro.props;
 const t = useTranslations(locale);
 
 const pageTitle = title ? seo[locale].titleTemplate(title) : seo[locale].title;
@@ -39,6 +41,23 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
     {/* If a language switch is pending, hide the page before first paint so it
         never flashes at the top before the body-end script restores scroll.
         Revealed by that script (or DOMContentLoaded as a failsafe). */}
+    {boot && (
+      <script is:inline>
+        {/* First-visit only, motion-safe, and not during a language-switch
+            restore: add html.boot before first paint so the hero plays its
+            staged entrance. Set once per session so refresh/return skip it. */}
+        try {
+          if (
+            !sessionStorage.getItem("booted") &&
+            !sessionStorage.getItem("langScroll") &&
+            !matchMedia("(prefers-reduced-motion: reduce)").matches
+          ) {
+            document.documentElement.classList.add("boot");
+            sessionStorage.setItem("booted", "1");
+          }
+        } catch (e) {}
+      </script>
+    )}
     <script is:inline>
       try {
         if (sessionStorage.getItem("langScroll")) {

@@ -17,10 +17,30 @@ const toneClass: Record<NonNullable<TerminalLine["tone"]> | "default", string> =
   accent: "text-flow",
   default: "text-mist",
 };
+
+// Boot choreography: a running cursor sequences the lines so a `cmd` line types
+// itself in, then the output below it streams in, then the next command, etc.
+// (delays are no-ops unless html.boot is set — i.e. first visit, motion-safe.)
+const PER_CHAR = 0.012; // typing speed (s per character)
+let at = 0.4; // start just after the panel frame begins to appear
+const timed = lines.map((line) => {
+  if (line.tone === "cmd") {
+    const dur = +(line.text.length * PER_CHAR).toFixed(3);
+    const step = { line, mode: "type" as const, delay: +at.toFixed(3), dur, chars: line.text.length };
+    at += dur + 0.12; // brief pause after the command lands
+    return step;
+  }
+  const step = { line, mode: "out" as const, delay: +at.toFixed(3), dur: 0, chars: 0 };
+  at += 0.08; // stagger between output lines
+  return step;
+});
+const caretDelay = +at.toFixed(3); // idle prompt caret settles in last
 ---
 
 <div
   class:list={["overflow-hidden rounded-md border border-line-soft bg-ink-900", className]}
+  data-boot
+  style="--boot-delay: 0.26s"
   role="img"
   aria-label={title}
 >
@@ -31,13 +51,32 @@ const toneClass: Record<NonNullable<TerminalLine["tone"]> | "default", string> =
     </p>
     <span aria-hidden="true" class="font-mono text-[10px] tracking-widest text-dim uppercase">stdout</span>
   </div>
+  {/* On the first-visit boot: commands type themselves in, then their output
+      streams below. Without html.boot it's a plain static log. */}
   <div class="overflow-x-auto px-4 py-3 font-mono text-[13px] leading-relaxed" aria-hidden="true">
     {
-      lines.map((line) => (
-        <p class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}>{line.text}</p>
-      ))
+      timed.map(({ line, mode, delay, dur, chars }) =>
+        mode === "type" ? (
+          <p class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}>
+            <span
+              class="boot-typed"
+              style={`--type-ch: calc(${chars}ch + 4ch); --type-dur: ${dur}s; --type-delay: ${delay}s; animation-timing-function: steps(${chars}, end)`}
+            >
+              {line.text}
+            </span>
+          </p>
+        ) : (
+          <p
+            class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}
+            data-boot
+            style={`--boot-delay: ${delay}s`}
+          >
+            {line.text}
+          </p>
+        ),
+      )
     }
-    <p class="text-dim">
+    <p class="text-dim" data-boot style={`--boot-delay: ${caretDelay}s`}>
       <span class="caret-blink text-accent">▌</span>
     </p>
   </div>

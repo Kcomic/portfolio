@@ -28,7 +28,7 @@ const allEntries = await getCaseStudies(locale);
 const entries = allEntries.slice(0, FEATURED_LIMIT);
 ---
 
-<BaseLayout locale={locale}>
+<BaseLayout locale={locale} boot>
   <Hero locale={locale} />
 
   {/* 01 — What I build: editorial two-column list, not a card wall */}

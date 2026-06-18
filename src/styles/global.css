@@ -138,6 +138,50 @@
     transform: translateY(-3.5px) rotate(-45deg);
   }
 
+  /* First-visit hero "boot-up" entrance — home only, motion-safe, once per
+     session (gated by the BaseLayout head guard that adds html.boot before
+     first paint). Elements keep their final layout; only opacity/transform
+     animate, so there is zero layout shift. Repeat visits (no html.boot) and
+     reduced-motion users render instantly. */
+  html.boot [data-boot] {
+    animation: boot-in 0.55s var(--ease-out-expo) both;
+    animation-delay: var(--boot-delay, 0s);
+  }
+
+  @keyframes boot-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Terminal command line "types" itself in during the boot: the text is fully
+     present (so no-JS / reduced-motion just shows it) but clipped to a growing
+     width via steps(), so it reveals one character at a time. The caret is a
+     sibling right after the clip box, so it rides the typing edge for free. The
+     per-line char count / duration / delay come from inline custom props. */
+  .boot-typed {
+    white-space: pre;
+  }
+
+  html.boot .boot-typed {
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    vertical-align: bottom;
+    animation: boot-type var(--type-dur, 0.6s) steps(24) var(--type-delay, 0s) both;
+  }
+
+  @keyframes boot-type {
+    to {
+      max-width: var(--type-ch, 100%);
+    }
+  }
+
   /* Scroll reveal — opacity/transform only, disabled for reduced motion */
   .reveal {
     opacity: 0;
