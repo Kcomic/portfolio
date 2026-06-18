@@ -5,7 +5,7 @@ export const th: LocaleContent = {
     hero: {
       eyebrow: "Web Application Consultant · Backend Specialist",
       headline: "ผมพัฒนา web application ได้ทั้งระบบ — จุดแข็งอยู่ที่ backend และ production",
-      sub: "ตั้งแต่ frontend, API, database, การ deploy ไปจนถึงการดูแลระบบหลังขึ้น production — ผมทำ web system เองทั้งกระบวนการ แล้วอยู่ดูแลต่อ ทั้ง messaging platform, order consolidator, reporting pipeline และ internal tool ด้วย NestJS, React, Next.js, Angular, MongoDB, PostgreSQL, Docker และ Kubernetes",
+      sub: "ตั้งแต่ frontend, API, database, การ deploy ไปจนถึงการดูแลระบบหลังขึ้น production — ผมทำ web system เองทั้งกระบวนการ แล้วอยู่ดูแลต่อ ทั้ง messaging platform, order consolidator, reporting pipeline และ internal tool ด้วย Next.js, Angular, NestJS, MongoDB, PostgreSQL และ Kubernetes",
       status: "กรุงเทพฯ · UTC+7 · รับงานโปรเจกต์, consulting และ role",
       primary: { label: "ดู Case Studies", href: "/th/case-studies/" },
       secondary: [

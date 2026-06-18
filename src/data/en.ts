@@ -6,7 +6,7 @@ export const en: LocaleContent = {
     hero: {
       eyebrow: "Web Application Consultant · Backend Specialist",
       headline: "I build complete web applications — strongest in backend and production.",
-      sub: "Frontend, API, database, deployment, and the on-call that follows — I take web systems end to end, then stay to keep them running. Messaging platforms, order consolidators, reporting pipelines, internal tools — built with NestJS, React, Next.js, Angular, MongoDB, PostgreSQL, Docker, and Kubernetes.",
+      sub: "Frontend, API, database, deployment, and the on-call that follows — I take web systems end to end, then stay to keep them running. Messaging platforms, order consolidators, reporting pipelines, internal tools — built with Next.js, Angular, NestJS, MongoDB, PostgreSQL and Kubernetes.",
       status: "Bangkok · UTC+7 · open to client projects, consulting & roles",
       primary: { label: "View case studies", href: "/case-studies/" },
       secondary: [
