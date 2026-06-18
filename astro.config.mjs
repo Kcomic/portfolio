@@ -34,6 +34,12 @@ export default defineConfig({
     }),
   ],
   // Astro 6 Fonts API (stable): fonts are subset + self-hosted at build time.
+  // display: "optional" on every face = the browser never swaps the font in
+  // after first paint, so a late-arriving face can't reflow text (zero
+  // font-induced layout shift). The above-the-fold faces are preloaded in
+  // BaseLayout so they still win the ~100ms window and render branded on
+  // virtually every load; only a genuinely slow first paint falls back, and
+  // even then it stays stable instead of shifting.
   // Astro names each generated @font-face with a hashed family (e.g.
   // "IBM Plex Sans Thai-<hash>") and exposes it via the cssVariable. Because a
   // cross-family fallback by *plain* name ("IBM Plex Sans Thai") would not
@@ -43,6 +49,7 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontsource(),
+      display: "optional",
       name: "Space Grotesk",
       cssVariable: "--font-space-grotesk",
       weights: ["300 700"],
@@ -51,6 +58,7 @@ export default defineConfig({
     },
     {
       provider: fontProviders.fontsource(),
+      display: "optional",
       name: "IBM Plex Sans",
       cssVariable: "--font-ibm-plex-sans",
       weights: [400, 500, 600],
@@ -59,6 +67,7 @@ export default defineConfig({
     },
     {
       provider: fontProviders.fontsource(),
+      display: "optional",
       name: "IBM Plex Sans Thai",
       cssVariable: "--font-ibm-plex-sans-thai",
       weights: [400, 500, 600],
@@ -69,6 +78,7 @@ export default defineConfig({
     },
     {
       provider: fontProviders.fontsource(),
+      display: "optional",
       name: "IBM Plex Mono",
       cssVariable: "--font-ibm-plex-mono",
       weights: [400, 500],

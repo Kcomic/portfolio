@@ -40,6 +40,9 @@
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
+    /* Reserve the scrollbar gutter so a page that doesn't scroll can never
+       shift the centered layout sideways vs one that does. */
+    scrollbar-gutter: stable;
   }
 
   body {

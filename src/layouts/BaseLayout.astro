@@ -50,14 +50,15 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
       } catch (e) {}
     </script>
 
-    {/* Preload the two faces guaranteed above the fold: the display face (H1)
-        and the body face (hero sub-paragraph + CTA buttons). Mono is only small
-        labels; the Thai face is unicode-range scoped and never loads on EN — so
-        leave both to font-display: swap rather than spend preload bandwidth. */}
+    {/* Preload every face used above the fold so display:"optional" renders
+        branded (not the fallback) on a normal load: the display H1, the body
+        copy, and the mono used in the eyebrow/status/terminal labels on every
+        page. The Thai face is only above the fold on /th, so preload it there
+        only — on EN it would be unused bytes. */}
     <Font cssVariable="--font-space-grotesk" preload />
     <Font cssVariable="--font-ibm-plex-sans" preload />
-    <Font cssVariable="--font-ibm-plex-sans-thai" />
-    <Font cssVariable="--font-ibm-plex-mono" />
+    <Font cssVariable="--font-ibm-plex-sans-thai" preload={locale === "th"} />
+    <Font cssVariable="--font-ibm-plex-mono" preload />
 
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
