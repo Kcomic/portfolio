@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./font-fallbacks.css";
 
 /*
  * Design tokens — "Operating Notes" system.
@@ -25,13 +26,17 @@
   --color-flow: oklch(76% 0.07 230); /* desaturated blue — diagram secondary */
 
   /* Compose the multi-script stacks from the Astro Fonts API variables (see
-   * astro.config.mjs). The Thai face follows the Latin one so Thai glyphs in
-   * the /th routes fall through to it per-glyph, with one generic at the end. */
-  --font-display: var(--font-space-grotesk), var(--font-ibm-plex-sans-thai), sans-serif;
-  --font-sans: var(--font-ibm-plex-sans), var(--font-ibm-plex-sans-thai), sans-serif;
+   * astro.config.mjs). Order per family: real Latin face → Thai face → the
+   * metric-adjusted Latin fallback (font-fallbacks.css) → generic. The Thai
+   * face sits BEFORE the Arial-based metric fallback so Thai glyphs render in
+   * IBM Plex Sans Thai, not in the (Thai-capable but Latin-tuned) Arial; Latin
+   * glyphs skip the Thai face and land on the metric fallback, which matches the
+   * real font's metrics so font-display:swap causes no layout shift. */
+  --font-display: var(--font-space-grotesk), var(--font-ibm-plex-sans-thai), "Space Grotesk Fallback", sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), var(--font-ibm-plex-sans-thai), "IBM Plex Sans Fallback", sans-serif;
   /* Thai has no monospace face; route Thai glyphs in mono labels to the Thai
    * sans so they stay on-brand instead of dropping to a system font. */
-  --font-mono: var(--font-ibm-plex-mono), var(--font-ibm-plex-sans-thai), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-mono: var(--font-ibm-plex-mono), var(--font-ibm-plex-sans-thai), "IBM Plex Mono Fallback", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
