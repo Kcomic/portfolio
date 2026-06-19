@@ -187,6 +187,41 @@
     }
   }
 
+  /* First-visit boot: the architecture diagram powers on node-by-node following
+     the data flow, then the edges connect. SVG-internal opacity/scale only —
+     zero layout shift. Gated by html.boot, so no-JS, reduced-motion, and repeat
+     visits render the full diagram instantly. Per-element timing is supplied as
+     an inline --boot-delay. */
+  html.boot .boot-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: boot-node 0.5s var(--ease-out-expo) var(--boot-delay, 0s) both;
+  }
+
+  @keyframes boot-node {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  html.boot .boot-edge {
+    animation: boot-fade 0.45s var(--ease-out-expo) var(--boot-delay, 0s) both;
+  }
+
+  @keyframes boot-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   /* Scroll reveal — opacity/transform only, disabled for reduced motion */
   .reveal {
     opacity: 0;
@@ -283,4 +318,14 @@
   .caret-blink {
     animation: none;
   }
+}
+
+/* Unlayered (wins over Tailwind's utilities layer): a flow edge's `.flow-line`
+   utility sets `animation: flow-dash …`, which would replace any boot fade
+   declared in @layer components. Compose both here so flow edges keep their
+   running dash *and* fade in on their boot-delay like the other edges. */
+html.boot .flow-line.boot-edge {
+  animation:
+    flow-dash 1.8s linear infinite,
+    boot-fade 0.45s var(--ease-out-expo) var(--boot-delay, 0s) both;
 }

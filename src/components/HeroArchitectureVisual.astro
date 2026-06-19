@@ -42,46 +42,50 @@ const labels =
   </defs>
 
   {/* ---- edges (drawn first, under nodes) ---- */}
+  {/* Even ~0.09s stagger so each node lands distinctly while the diagram still
+      finishes near the headline/terminal (~1.3s), not lagging behind them. Each
+      edge fades in ~0.06s after its later endpoint node; flow-line edges also
+      keep their running dash. */}
   {/* dashboard -> api */}
-  <path d="M 95 74 V 150" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)"></path>
+  <path d="M 95 74 V 150" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)" class="boot-edge" style="--boot-delay: 0.3s"></path>
   {/* api -> queue (enqueue) */}
-  <path d="M 160 172 H 205 V 112 H 244" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  <path d="M 160 172 H 205 V 112 H 244" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line boot-edge" style="--boot-delay: 0.57s" marker-end="url(#arrow)"></path>
   {/* queue -> worker */}
-  <path d="M 320 134 V 204" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  <path d="M 320 134 V 204" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line boot-edge" style="--boot-delay: 0.66s" marker-end="url(#arrow)"></path>
   {/* worker -> database */}
-  <path d="M 320 254 V 324" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  <path d="M 320 254 V 324" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line boot-edge" style="--boot-delay: 0.75s" marker-end="url(#arrow)"></path>
   {/* webhook -> worker */}
-  <path d="M 160 292 H 205 V 232 H 244" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  <path d="M 160 292 H 205 V 232 H 244" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line boot-edge" style="--boot-delay: 0.66s" marker-end="url(#arrow)"></path>
   {/* external platforms <-> api (REST / OAuth) */}
-  <path d="M 180 390 V 360 H 220 V 194 H 166" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)"></path>
+  <path d="M 180 390 V 360 H 220 V 194 H 166" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)" class="boot-edge" style="--boot-delay: 0.48s"></path>
   {/* database -> reporting */}
-  <path d="M 390 352 H 430 V 232 H 464" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#arrow)"></path>
+  <path d="M 390 352 H 430 V 232 H 464" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line boot-edge" style="--boot-delay: 0.84s" marker-end="url(#arrow)"></path>
   {/* reporting -> dashboard (closes the loop along the top) */}
-  <path d="M 540 204 V 52 H 166" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)"></path>
+  <path d="M 540 204 V 52 H 166" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#arrow-dim)" class="boot-edge" style="--boot-delay: 0.84s"></path>
   {/* deployment underpins db / reporting (dotted risers) */}
-  <path d="M 320 378 V 454" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5"></path>
-  <path d="M 540 258 V 454" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5"></path>
+  <path d="M 320 378 V 454" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5" class="boot-edge" style="--boot-delay: 0.93s"></path>
+  <path d="M 540 258 V 454" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5" class="boot-edge" style="--boot-delay: 0.93s"></path>
 
   {/* ---- edge labels ---- */}
-  <text x="212" y="100" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">enqueue</text>
-  <text x="330" y="174" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">consume</text>
-  <text x="330" y="294" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">bulk write</text>
-  <text x="228" y="280" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">REST · OAuth 2.0</text>
-  <text x="438" y="296" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">aggregate</text>
+  <text x="212" y="100" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5" class="boot-edge" style="--boot-delay: 0.57s">enqueue</text>
+  <text x="330" y="174" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5" class="boot-edge" style="--boot-delay: 0.66s">consume</text>
+  <text x="330" y="294" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5" class="boot-edge" style="--boot-delay: 0.75s">bulk write</text>
+  <text x="228" y="280" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5" class="boot-edge" style="--boot-delay: 0.48s">REST · OAuth 2.0</text>
+  <text x="438" y="296" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5" class="boot-edge" style="--boot-delay: 0.84s">aggregate</text>
 
-  {/* ---- nodes ---- */}
-  <ArchitectureNode x={30} y={30} label="Dashboard" sub="Angular · React" />
-  <ArchitectureNode x={30} y={150} label="API" sub="NestJS · REST" tone="accent" />
-  <ArchitectureNode x={30} y={270} label="Webhook" sub="inbound events" />
-  <ArchitectureNode x={30} y={390} w={150} label="External APIs" sub="Shopee · Lazada · TH Post" />
-  <ArchitectureNode x={250} y={90} w={140} label="Queue / Jobs" sub="agenda · batches" />
-  <ArchitectureNode x={250} y={210} w={140} label="Worker Pool" sub="concurrency ×8" tone="accent" />
-  <ArchitectureNode x={250} y={330} w={140} label="Database" sub="MongoDB · PostgreSQL" />
-  <ArchitectureNode x={470} y={210} w={140} label="Reporting" sub="aggregation pipeline" />
-  <ArchitectureNode x={250} y={454} w={360} label="Deployment" sub="Docker · GitHub Actions · Kubernetes" />
+  {/* ---- nodes (reveal order sweeps the data flow, ~0.09s apart) ---- */}
+  <ArchitectureNode x={30} y={30} label="Dashboard" sub="Angular · React" delay={0.15} />
+  <ArchitectureNode x={30} y={150} label="API" sub="NestJS · REST" tone="accent" delay={0.24} />
+  <ArchitectureNode x={30} y={270} label="Webhook" sub="inbound events" delay={0.33} />
+  <ArchitectureNode x={30} y={390} w={150} label="External APIs" sub="Shopee · Lazada · TH Post" delay={0.42} />
+  <ArchitectureNode x={250} y={90} w={140} label="Queue / Jobs" sub="agenda · batches" delay={0.51} />
+  <ArchitectureNode x={250} y={210} w={140} label="Worker Pool" sub="concurrency ×8" tone="accent" delay={0.6} />
+  <ArchitectureNode x={250} y={330} w={140} label="Database" sub="MongoDB · PostgreSQL" delay={0.69} />
+  <ArchitectureNode x={470} y={210} w={140} label="Reporting" sub="aggregation pipeline" delay={0.78} />
+  <ArchitectureNode x={250} y={454} w={360} label="Deployment" sub="Docker · GitHub Actions · Kubernetes" delay={0.87} />
 
   {/* ---- legend ---- */}
-  <g font-family="var(--font-mono)" font-size="8.5" fill="var(--color-dim)">
+  <g font-family="var(--font-mono)" font-size="8.5" fill="var(--color-dim)" class="boot-edge" style="--boot-delay: 0.96s">
     <line x1="32" y1="500" x2="56" y2="500" stroke="var(--color-ink-700)" stroke-width="1"></line>
     <text x="62" y="503">{labels.sync}</text>
     <line x1="110" y1="500" x2="134" y2="500" stroke="var(--color-accent-deep)" stroke-width="1" stroke-dasharray="3 5"></line>

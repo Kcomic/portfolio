@@ -54,9 +54,10 @@ const { hero, terminal } = getContent(locale).home;
     </div>
 
     <div class="min-w-0 lg:col-span-6">
-      <div data-boot style="--boot-delay: 0.18s">
-        <HeroArchitectureVisual locale={locale} />
-      </div>
+      {/* The diagram is not wrapped in a single data-boot: its nodes and edges
+          stage themselves in (see HeroArchitectureVisual / global.css .boot-node)
+          so the system appears to "boot up" piece by piece. */}
+      <HeroArchitectureVisual locale={locale} />
       <TerminalPanel title={terminal.title} lines={terminal.lines} class="mt-6" />
     </div>
   </div>
