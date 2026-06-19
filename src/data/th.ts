@@ -1,3 +1,4 @@
+import { site } from "./site";
 import type { LocaleContent } from "./types";
 
 export const th: LocaleContent = {
@@ -168,7 +169,7 @@ export const th: LocaleContent = {
     title: "เกี่ยวกับผม",
     heading: "ผมทำ web system ได้ทั้งก้อน — และไม่หายไปตอน deploy",
     paragraphs: [
-      "ผมเป็น software engineer และที่ปรึกษา ออกแบบและพัฒนา web application ตั้งแต่ frontend, API, database ไปจนถึงการ deploy และดูแลระบบเบื้องหลัง โดยลงลึกที่สุดในส่วนที่ยาก: backend, ข้อมูลปริมาณมาก, integration และ production ตอนนี้ผมเป็น developer ที่ Entronica และรับงานโปรเจกต์ของลูกค้าควบคู่ไปด้วย",
+      `ผมเป็น software engineer และที่ปรึกษา ออกแบบและพัฒนา web application ตั้งแต่ frontend, API, database ไปจนถึงการ deploy และดูแลระบบเบื้องหลัง โดยลงลึกที่สุดในส่วนที่ยาก: backend, ข้อมูลปริมาณมาก, integration และ production ตอนนี้ผมเป็น developer ที่ ${site.company.replace(" Co., Ltd.", "")} และรับงานโปรเจกต์ของลูกค้าควบคู่ไปด้วย`,
       "งานส่วนใหญ่ของผมอยู่ตรงจุดที่ระบบเริ่มยาก — ข้อมูลจำนวนมาก, workflow ที่ซับซ้อน, background processing, integration กับระบบภายนอก, database performance และข้อจำกัดที่โผล่มาหลัง deploy เท่านั้น",
       "ผมเคยออกแบบและพัฒนา messaging platform, ระบบ campaign และ scheduling, reporting และ validation pipeline รวมถึงระบบรวม order จาก Shopee, Lazada — พร้อม dashboard สำหรับผู้ใช้งาน — และ integration กับ Thailand Post บางระบบผมยังดูแลอยู่จนถึงตอนนี้ จึงต้องอยู่กับผลของทุกการตัดสินใจที่ทำไว้ตั้งแต่ตอนสร้างมัน",
     ],
