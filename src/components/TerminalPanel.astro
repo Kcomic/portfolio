@@ -54,30 +54,29 @@ const caretDelay = +at.toFixed(3); // idle prompt caret settles in last
   {/* On the first-visit boot: commands type themselves in, then their output
       streams below. Without html.boot it's a plain static log. */}
   <div class="overflow-x-auto px-4 py-3 font-mono text-[13px] leading-relaxed" aria-hidden="true">
+    {/* Each tag's `>` hugs its content (no newline between `>` and the text or
+        `<span>`). The lines are `white-space: pre`, so source indentation
+        between a tag and its text would render as leading spaces and push the
+        whole log to the right. Keep the closing `>` glued to the content. */}
     {
       timed.map(({ line, mode, delay, dur, chars }) =>
         mode === "type" ? (
-          <p class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}>
-            <span
-              class="boot-typed"
-              style={`--type-ch: calc(${chars}ch + 4ch); --type-dur: ${dur}s; --type-delay: ${delay}s; animation-timing-function: steps(${chars}, end)`}
-            >
-              {line.text}
-            </span>
-          </p>
+          <p
+            class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}
+          ><span class="boot-typed" style={`--type-ch: calc(${chars}ch + 4ch); --type-dur: ${dur}s; --type-delay: ${delay}s; animation-timing-function: steps(${chars}, end)`}>{line.text}</span></p>
         ) : (
           <p
             class:list={["whitespace-pre", toneClass[line.tone ?? "default"]]}
             data-boot
             style={`--boot-delay: ${delay}s`}
-          >
-            {line.text}
-          </p>
+          >{line.text}</p>
         ),
       )
     }
-    <p class="text-dim" data-boot style={`--boot-delay: ${caretDelay}s`}>
-      <span class="caret-blink text-accent">▌</span>
-    </p>
+    <p
+      class="text-dim"
+      data-boot
+      style={`--boot-delay: ${caretDelay}s`}
+    ><span class="caret-blink text-accent">▌</span></p>
   </div>
 </div>
