@@ -21,7 +21,7 @@ const toneClass: Record<NonNullable<TerminalLine["tone"]> | "default", string> =
 // Boot choreography: a running cursor sequences the lines so a `cmd` line types
 // itself in, then the output below it streams in, then the next command, etc.
 // (delays are no-ops unless html.boot is set — i.e. first visit, motion-safe.)
-const PER_CHAR = 0.012; // typing speed (s per character)
+const PER_CHAR = 0.02; // typing speed (s per character) — ~50 cps, a deliberate "machine typing" pace
 let at = 0.4; // start just after the panel frame begins to appear
 const timed = lines.map((line) => {
   if (line.tone === "cmd") {
