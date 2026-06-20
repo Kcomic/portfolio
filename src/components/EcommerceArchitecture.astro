@@ -59,16 +59,16 @@ const description =
   <text x="556" y="40" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">consolidated</text>
 
   {/* ---- nodes ---- */}
-  <ArchitectureNode x={250} y={24} w={170} label="Operator UI" sub="React / Next · consolidated" />
-  <ArchitectureNode x={24} y={120} w={150} label="Shopee" sub="Seller API" />
-  <ArchitectureNode x={24} y={192} w={150} label="Lazada" sub="Seller API" />
-  <ArchitectureNode x={24} y={264} w={150} label="JD Central" sub="Seller API" />
-  <ArchitectureNode x={250} y={192} w={170} label="Connectors" sub="REST · OAuth · token refresh" tone="accent" />
-  <ArchitectureNode x={486} y={120} w={170} label="Normalizer" sub="→ internal order model" />
-  <ArchitectureNode x={486} y={228} w={170} label="Order core" sub="orders · status · shipment" tone="accent" />
-  <ArchitectureNode x={250} y={352} w={170} label="SQL database" sub="relational · orders" />
-  <ArchitectureNode x={486} y={352} w={170} label="Thailand Post" sub="tracking · status" />
-  <ArchitectureNode x={24} y={448} w={632} label="Deployment" sub="Docker · Jenkins" />
+  <ArchitectureNode x={250} y={24} w={170} label="Operator UI" sub="React / Next · consolidated" revealDelay={0} />
+  <ArchitectureNode x={24} y={120} w={150} label="Shopee" sub="Seller API" revealDelay={0.04} />
+  <ArchitectureNode x={24} y={192} w={150} label="Lazada" sub="Seller API" revealDelay={0.08} />
+  <ArchitectureNode x={24} y={264} w={150} label="JD Central" sub="Seller API" revealDelay={0.12} />
+  <ArchitectureNode x={250} y={192} w={170} label="Connectors" sub="REST · OAuth · token refresh" tone="accent" revealDelay={0.16} />
+  <ArchitectureNode x={486} y={120} w={170} label="Normalizer" sub="→ internal order model" revealDelay={0.2} />
+  <ArchitectureNode x={486} y={228} w={170} label="Order core" sub="orders · status · shipment" tone="accent" revealDelay={0.24} />
+  <ArchitectureNode x={250} y={352} w={170} label="SQL database" sub="relational · orders" revealDelay={0.28} />
+  <ArchitectureNode x={486} y={352} w={170} label="Thailand Post" sub="tracking · status" revealDelay={0.32} />
+  <ArchitectureNode x={24} y={448} w={632} label="Deployment" sub="Docker · Jenkins" revealDelay={0.36} />
 
   {/* ---- legend ---- */}
   <g font-family="var(--font-mono)" font-size="8.5" fill="var(--color-dim)">

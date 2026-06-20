@@ -11,17 +11,29 @@ interface Props {
   label: string;
   sub?: string;
   tone?: "default" | "accent";
-  /** First-visit boot reveal delay in seconds (see global.css .boot-node). */
+  /** First-visit boot reveal delay in seconds — hero diagram (see global.css .boot-node). */
   delay?: number;
+  /** Scroll-into-view stagger delay in seconds — case-study diagrams (see .case-node). */
+  revealDelay?: number;
 }
 
-const { x, y, w = 130, h = 44, label, sub, tone = "default", delay } = Astro.props;
+const { x, y, w = 130, h = 44, label, sub, tone = "default", delay, revealDelay } = Astro.props;
 
 const stroke = tone === "accent" ? "var(--color-accent-deep)" : "var(--color-line)";
 const labelY = sub ? y + 19 : y + h / 2 + 3.5;
+
+const styleVars = [
+  delay !== undefined ? `--boot-delay: ${delay}s` : null,
+  revealDelay !== undefined ? `--reveal-delay: ${revealDelay}s` : null,
+]
+  .filter(Boolean)
+  .join("; ");
 ---
 
-<g class:list={[delay !== undefined && "boot-node"]} style={delay !== undefined ? `--boot-delay: ${delay}s` : undefined}>
+<g
+  class:list={[delay !== undefined && "boot-node", revealDelay !== undefined && "case-node"]}
+  style={styleVars || undefined}
+>
   <rect
     x={x}
     y={y}
