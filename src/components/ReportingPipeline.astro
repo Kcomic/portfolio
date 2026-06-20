@@ -1,0 +1,94 @@
+---
+/**
+ * Visual for the MongoDB Reporting Optimization case study. This case is about
+ * query shape, not system topology, so instead of a box-and-arrow diagram it
+ * shows a before/after of a reporting aggregation pipeline: a collection-bound
+ * pipeline (no usable index, per-doc $lookup, $push into big arrays, in-memory
+ * $sort, skip/limit) versus a result-bound one (index-aligned $match, early
+ * $project, filtered indexed $lookup, counters/$setWindowFields, range cursor).
+ * All stages are drawn from the case study content. Locale-agnostic; shared by
+ * the EN and TH pages.
+ */
+const description =
+  "Before-and-after of a reporting aggregation pipeline. Before: a $match with no usable index scans the whole collection, a $lookup runs a sub-query per document, $group with $push builds large arrays, an in-memory $sort, and skip/limit pagination — the query scales with the collection. After: a $match backed by a compound index on campaignId, status and createdAt, a $project that drops unused fields early, a filtered indexed $lookup, a $group using counters and $setWindowFields, and a range cursor on an indexed field — the query reads only what it returns and scales with the result.";
+
+const before = [
+  { op: "$match", note: "no index — full scan" },
+  { op: "$lookup", note: "sub-query per document" },
+  { op: "$group · $push", note: "whole docs → large arrays" },
+  { op: "$sort", note: "blocking, in memory" },
+  { op: "skip / limit", note: "deep pagination" },
+];
+const after = [
+  { op: "$match", note: "idx {campaignId, status, createdAt}" },
+  { op: "$project", note: "drop unused fields early" },
+  { op: "$lookup", note: "filtered · indexed FK" },
+  { op: "$group", note: "counters · $setWindowFields" },
+  { op: "range cursor", note: "on an indexed field" },
+];
+
+const xL = 18;
+const xR = 370;
+const w = 252;
+const h = 44;
+const y0 = 60;
+const pitch = 58;
+const yOf = (i: number) => y0 + i * pitch;
+const mid = yOf(2) + h / 2;
+---
+
+<svg viewBox="0 0 640 360" role="img" aria-label={description} class="h-auto w-full min-w-150 select-none">
+  <title>{description}</title>
+  <defs>
+    <marker id="rp-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--color-ink-700)"></path>
+    </marker>
+    <marker id="rp-arrow-on" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--color-accent-deep)"></path>
+    </marker>
+  </defs>
+
+  {/* ---- column headers ---- */}
+  <text x={xL} y={40} fill="var(--color-signal)" font-family="var(--font-mono)" font-size="11" letter-spacing="0.08em">BEFORE</text>
+  <text x={xL + 72} y={40} fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">scales with the collection</text>
+  <text x={xR} y={40} fill="var(--color-accent)" font-family="var(--font-mono)" font-size="11" letter-spacing="0.08em">AFTER</text>
+  <text x={xR + 58} y={40} fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">scales with the result</text>
+
+  {/* ---- stage-to-stage connectors (pipeline flows down) ---- */}
+  {
+    before.slice(0, -1).map((_, i) => (
+      <path d={`M ${xL + w / 2} ${yOf(i) + h} V ${yOf(i + 1)}`} fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#rp-arrow)"></path>
+    ))
+  }
+  {
+    after.slice(0, -1).map((_, i) => (
+      <path d={`M ${xR + w / 2} ${yOf(i) + h} V ${yOf(i + 1)}`} fill="none" stroke="var(--color-accent-deep)" stroke-width="1" marker-end="url(#rp-arrow-on)"></path>
+    ))
+  }
+
+  {/* ---- rewrite transition ---- */}
+  <path d={`M 286 ${mid} H 364`} fill="none" stroke="var(--color-accent-deep)" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#rp-arrow-on)"></path>
+  <text x="300" y={mid - 8} fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">rewrite</text>
+
+  {/* ---- before stages (neutral border, amber notes) ---- */}
+  {
+    before.map((s, i) => (
+      <g>
+        <rect x={xL} y={yOf(i)} width={w} height={h} rx="4" fill="var(--color-ink-900)" stroke="var(--color-line-soft)" stroke-width="1"></rect>
+        <text x={xL + 14} y={yOf(i) + 19} fill="var(--color-fog)" font-family="var(--font-mono)" font-size="10.5">{s.op}</text>
+        <text x={xL + 14} y={yOf(i) + 33} fill="var(--color-signal)" font-family="var(--font-mono)" font-size="8">{s.note}</text>
+      </g>
+    ))
+  }
+
+  {/* ---- after stages (accent border, emerald notes) ---- */}
+  {
+    after.map((s, i) => (
+      <g>
+        <rect x={xR} y={yOf(i)} width={w} height={h} rx="4" fill="var(--color-ink-900)" stroke="var(--color-accent-deep)" stroke-width="1"></rect>
+        <text x={xR + 14} y={yOf(i) + 19} fill="var(--color-fog)" font-family="var(--font-mono)" font-size="10.5">{s.op}</text>
+        <text x={xR + 14} y={yOf(i) + 33} fill="var(--color-accent)" font-family="var(--font-mono)" font-size="8">{s.note}</text>
+      </g>
+    ))
+  }
+</svg>

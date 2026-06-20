@@ -9,6 +9,7 @@ stack: ["MongoDB", "Mongoose", "NestJS", "Aggregation Pipeline", "Node.js"]
 ---
 
 import CaseStudySection from "@/components/CaseStudySection.astro";
+import ReportingPipeline from "@/components/ReportingPipeline.astro";
 
 <CaseStudySection n="01" title="Context">
 
@@ -40,6 +41,15 @@ Several report queries showed exactly these patterns. Some scanned far more docu
 </CaseStudySection>
 
 <CaseStudySection n="04" title="Solution">
+
+<figure data-reveal class="my-2 rounded-lg border border-line-soft bg-ink-900/40 p-5 sm:p-6">
+  <div class="overflow-x-auto">
+    <ReportingPipeline />
+  </div>
+  <figcaption class="mt-4 text-center font-mono text-xs text-dim">
+    Same query, restructured: an index-aligned pipeline reads only what it returns — latency tracks the result size, not how much campaign history has accumulated
+  </figcaption>
+</figure>
 
 I started from the queries themselves — the real filter and sort combinations the report endpoints used — and read explain plans instead of guessing where time went.
 
