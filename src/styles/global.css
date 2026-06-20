@@ -222,53 +222,6 @@
     }
   }
 
-  /* First-visit "power-on": a single soft emerald scanline sweeps down the hero
-     as it boots — atmosphere, not a gate. Pure overlay (pointer-events: none, no
-     layout impact) that exists only under html.boot, so repeat visits, no-JS,
-     and reduced-motion never render it. */
-  html.boot .boot-sweep {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  html.boot .boot-sweep::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    top: 0;
-    height: 32%;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      color-mix(in oklab, var(--color-accent) 7%, transparent) 55%,
-      color-mix(in oklab, var(--color-accent) 18%, transparent) 88%,
-      transparent
-    );
-    /* linear so the scanline travels at a steady mechanical pace (an easing
-       curve would make it lurch then crawl); opacity in/out hides the ends. */
-    animation: boot-sweep 0.85s linear 0.1s both;
-  }
-
-  @keyframes boot-sweep {
-    0% {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    12% {
-      opacity: 1;
-    }
-    85% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(315%);
-      opacity: 0;
-    }
-  }
-
   /* Scroll reveal — opacity/transform only, disabled for reduced motion */
   .reveal {
     opacity: 0;
