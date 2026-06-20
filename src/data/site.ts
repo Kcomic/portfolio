@@ -5,11 +5,10 @@ export const site = {
   shortName: "Bawonsak P.",
   role: "Web Application Consultant · Backend Specialist",
   company: "Entronica Co., Ltd.",
-  email: "bawonsak.p@entronica.co.th",
+  email: "bawonsak.petch@gmail.com",
   location: "Bangkok, Thailand",
-  // TODO: replace with real profile URLs before going live.
-  github: "https://github.com/bawonsak",
-  linkedin: "https://www.linkedin.com/in/bawonsak-petchbunjerdkul",
+  github: "https://github.com/Kcomic",
+  linkedin: "https://www.linkedin.com/in/bawonsak-petchbunjerdkul-100590163",
   ogImage: "/og.png",
 } as const;
 
