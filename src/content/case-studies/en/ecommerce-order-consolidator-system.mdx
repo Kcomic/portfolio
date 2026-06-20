@@ -9,12 +9,13 @@ stack: ["React / Next.js", "Node.js", "Express.js", "SQL database", "REST API", 
 ---
 
 import CaseStudySection from "@/components/CaseStudySection.astro";
+import EcommerceArchitecture from "@/components/EcommerceArchitecture.astro";
 
 <CaseStudySection n="01" title="Context">
 
 This was an order consolidator system that pulled orders from multiple seller platforms into a single operational system. Sellers and operations staff used it to work with order lists, order detail, order status, shipment status, and logistics workflows from one place instead of logging into each platform separately.
 
-The platform context included Shopee, Lazada, and Shopat24 / 24Shopping where applicable, plus a Thailand Post integration for shipment and pickup-related workflows. I worked on the system as part of a team, contributing to frontend and backend implementation, the authentication flow, platform API integration, webhook handling, and the order and shipment workflows. The focus here is on the integration problems and how we approached them.
+The platform context included Shopee, Lazada, and JD Central where applicable, plus a Thailand Post integration for shipment and pickup-related workflows. I worked on the system as part of a team, contributing to frontend and backend implementation, the authentication flow, platform API integration, webhook handling, and the order and shipment workflows. The focus here is on the integration problems and how we approached them.
 
 </CaseStudySection>
 
@@ -30,7 +31,7 @@ In practice that meant operators switched between platforms all day, and any pro
 
 - **Multiple platform APIs.** Each platform exposed orders differently — field names, status models, pagination, and rate limits all varied, so nothing could be integrated generically.
 - **OAuth 2.0 token lifecycles.** Each platform required its own authorization flow, with access tokens and refresh tokens that expired on different schedules and failed in different ways.
-- **Webhook behavior.** Order and status events arrived as webhooks from external systems, with no guarantee of ordering and occasional gaps that had to be detected and reconciled.
+- **Webhook behavior.** Thailand Post pushed shipment-status changes back as webhooks after we subscribed, with no guarantee of ordering and occasional gaps that had to be detected and reconciled.
 - **Thailand Post integration.** Logistics workflows — shipment creation, tracking codes, status updates — had to connect to a separate API with its own conventions.
 - **Inconsistent API behavior.** Real responses did not always match documentation, so error handling had to be defensive rather than optimistic.
 - **Limited sandboxes.** Sandbox environments were incomplete or behaved differently from production, which directly shaped how we could test end-to-end Shopee and Lazada flows.
@@ -39,9 +40,18 @@ In practice that meant operators switched between platforms all day, and any pro
 
 <CaseStudySection n="04" title="Solution">
 
+<figure data-reveal class="my-2 rounded-lg border border-line-soft bg-ink-900/40 p-5 sm:p-6">
+  <div class="overflow-x-auto">
+    <EcommerceArchitecture />
+  </div>
+  <figcaption class="mt-4 text-center font-mono text-xs text-dim">
+    Per-platform connectors normalize every order into one model · Thailand Post pushes shipment-status webhooks, reconciled via its API · Docker + Jenkins
+  </figcaption>
+</figure>
+
 We built a centralized order management workflow on top of a per-platform integration layer. Each platform connector spoke REST with OAuth 2.0, owned its own token refresh logic, and translated platform-specific order payloads into a normalized internal order model. Normalizing at ingestion was a deliberate trade-off: it cost effort up front for every new platform, but it kept the order, shipment, and UI logic free of platform-specific branching.
 
-Webhooks drove status updates where the platforms supported them, with API calls used to reconcile state when events were missed — we treated webhooks as a fast path, not a source of truth. Shipment workflows connected to the Thailand Post API for tracking codes and logistics updates. Order and platform data lived in a relational SQL design, and the frontend gave operators practical flows over the consolidated data: order lists, order detail, status changes, and shipment handling in one place.
+Shipment workflows connected to the Thailand Post API for tracking codes and logistics updates: we subscribed to it and it pushed shipment-status changes back as webhooks, with API polling to reconcile any that were missed — we treated webhooks as a fast path, not a source of truth. Order and platform data lived in a relational SQL design, and the frontend gave operators practical flows over the consolidated data: order lists, order detail, status changes, and shipment handling in one place.
 
 </CaseStudySection>
 

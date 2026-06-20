@@ -1,0 +1,80 @@
+---
+/**
+ * Architecture schematic for the E-commerce Order Consolidator case study.
+ * Drawn from the case study content + the author's clarifications: seller
+ * platforms (Shopee, Lazada, JD Central) integrate through per-platform
+ * connectors (REST + OAuth 2.0 + token refresh) that normalize each platform's
+ * payloads into one internal order model used by the order core. Shipments go
+ * out to the Thailand Post API; we subscribe to it and it pushes shipment-status
+ * changes back as webhooks (a fast path), reconciled by polling the API as the
+ * source of truth. Data is persisted in a relational SQL database, operators
+ * work over the consolidated data in a React/Next.js UI, and the services are
+ * deployed with Docker and Jenkins. Same visual language as the hero schematic;
+ * locale-agnostic, shared by the EN and TH pages.
+ */
+import ArchitectureNode from "./ArchitectureNode.astro";
+
+const description =
+  "Architecture of the order consolidator: seller platforms (Shopee, Lazada, JD Central) integrate through per-platform connectors that handle REST and OAuth 2.0 with token refresh and normalize each platform's payloads into one internal order model used by the order core for order, status, and shipment workflows; the order core subscribes to the Thailand Post API for shipments and receives shipment-status changes back as webhooks (a fast path) reconciled by polling the API as the source of truth; data is persisted in a relational SQL database, operators work over the consolidated data in a React/Next.js UI, and the services are deployed with Docker and Jenkins.";
+---
+
+<svg viewBox="0 0 700 514" role="img" aria-label={description} class="h-auto w-full min-w-150 select-none">
+  <title>{description}</title>
+  <defs>
+    <marker id="ec-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--color-accent-deep)"></path>
+    </marker>
+    <marker id="ec-arrow-dim" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--color-ink-700)"></path>
+    </marker>
+  </defs>
+
+  {/* ---- edges (under nodes) ---- */}
+  {/* three seller platforms converge into the connector layer (REST + OAuth) */}
+  <path d="M 174 142 H 212 V 202 H 250" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  <path d="M 174 214 H 250" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  <path d="M 174 286 H 212 V 226 H 250" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  {/* connectors -> normalizer (orders) */}
+  <path d="M 420 214 H 453 V 142 H 486" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  {/* normalizer -> order core */}
+  <path d="M 571 164 V 228" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  {/* order core -> SQL (persist) */}
+  <path d="M 486 256 H 438 V 374 H 420" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  {/* order core -> Thailand Post: subscribe + create shipment */}
+  <path d="M 558 272 V 352" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  {/* Thailand Post -> order core: shipment-status webhook (fast path) */}
+  <path d="M 584 352 V 272" fill="none" stroke="var(--color-accent-deep)" stroke-width="1" class="flow-line" marker-end="url(#ec-arrow)"></path>
+  {/* order core -> operator UI (consolidated view, closes the loop) */}
+  <path d="M 656 236 H 672 V 46 H 420" fill="none" stroke="var(--color-ink-700)" stroke-width="1" marker-end="url(#ec-arrow-dim)"></path>
+  {/* deployment underpins the database + services (dotted risers) */}
+  <path d="M 335 396 V 448" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5"></path>
+  <path d="M 486 272 H 453 V 448" fill="none" stroke="var(--color-ink-700)" stroke-width="1" stroke-dasharray="2 5"></path>
+
+  {/* ---- edge labels ---- */}
+  <text x="186" y="186" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">REST · OAuth</text>
+  <text x="430" y="132" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">orders</text>
+  <text x="396" y="316" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">persist</text>
+  <text x="494" y="314" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">subscribe</text>
+  <text x="588" y="314" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">webhook</text>
+  <text x="556" y="40" fill="var(--color-dim)" font-family="var(--font-mono)" font-size="8.5">consolidated</text>
+
+  {/* ---- nodes ---- */}
+  <ArchitectureNode x={250} y={24} w={170} label="Operator UI" sub="React / Next · consolidated" />
+  <ArchitectureNode x={24} y={120} w={150} label="Shopee" sub="Seller API" />
+  <ArchitectureNode x={24} y={192} w={150} label="Lazada" sub="Seller API" />
+  <ArchitectureNode x={24} y={264} w={150} label="JD Central" sub="Seller API" />
+  <ArchitectureNode x={250} y={192} w={170} label="Connectors" sub="REST · OAuth · token refresh" tone="accent" />
+  <ArchitectureNode x={486} y={120} w={170} label="Normalizer" sub="→ internal order model" />
+  <ArchitectureNode x={486} y={228} w={170} label="Order core" sub="orders · status · shipment" tone="accent" />
+  <ArchitectureNode x={250} y={352} w={170} label="SQL database" sub="relational · orders" />
+  <ArchitectureNode x={486} y={352} w={170} label="Thailand Post" sub="tracking · status" />
+  <ArchitectureNode x={24} y={448} w={632} label="Deployment" sub="Docker · Jenkins" />
+
+  {/* ---- legend ---- */}
+  <g font-family="var(--font-mono)" font-size="8.5" fill="var(--color-dim)">
+    <line x1="26" y1="502" x2="50" y2="502" stroke="var(--color-ink-700)" stroke-width="1"></line>
+    <text x="56" y="505">control</text>
+    <line x1="120" y1="502" x2="144" y2="502" stroke="var(--color-accent-deep)" stroke-width="1" stroke-dasharray="3 5"></line>
+    <text x="150" y="505">data flow</text>
+  </g>
+</svg>
