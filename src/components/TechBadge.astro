@@ -1,13 +1,20 @@
 ---
 interface Props {
   label: string;
+  /** When set, the badge becomes a link (used to jump to filtered case studies). */
+  href?: string;
 }
 
-const { label } = Astro.props;
+const { label, href } = Astro.props;
+const base = "inline-block rounded border border-line-soft bg-ink-900 px-2 py-0.5 font-mono text-xs whitespace-nowrap text-mist";
 ---
 
-<span
-  class="inline-block rounded border border-line-soft bg-ink-900 px-2 py-0.5 font-mono text-xs whitespace-nowrap text-mist"
->
-  {label}
-</span>
+{
+  href ? (
+    <a href={href} class:list={[base, "transition-colors hover:border-accent-deep hover:text-accent"]}>
+      {label}
+    </a>
+  ) : (
+    <span class={base}>{label}</span>
+  )
+}

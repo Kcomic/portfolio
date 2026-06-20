@@ -17,15 +17,21 @@ interface Props {
   challenge: string;
   stack: string[];
   order: number;
+  /** Space-separated tech slugs (from src/lib/skills.ts) for the filter to match. */
+  techSlugs: string;
 }
 
-const { locale, slug, title, subtitle, summary, challenge, stack, order } = Astro.props;
+const { locale, slug, title, subtitle, summary, challenge, stack, order, techSlugs } = Astro.props;
 const t = useTranslations(locale);
 const href = localizePath(`/case-studies/${slug}`, locale);
 const n = String(order).padStart(2, "0");
 ---
 
-<article data-reveal class="group relative grid gap-5 border-t border-line py-9 md:grid-cols-12 md:gap-8">
+<article
+  data-reveal
+  data-skills={techSlugs}
+  class="group relative grid gap-5 border-t border-line py-9 md:grid-cols-12 md:gap-8"
+>
   <div class="md:col-span-2">
     <p class="font-mono text-xs text-dim">
       CS<span class="text-accent">·</span>{n}

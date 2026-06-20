@@ -8,13 +8,15 @@ import SkillGroup from "./SkillGroup.astro";
 
 interface Props {
   groups: SkillGroupData[];
+  /** Skill label -> filtered case-studies link, for skills a case study backs. */
+  skillHrefs: Map<string, string>;
 }
 
-const { groups } = Astro.props;
+const { groups, skillHrefs } = Astro.props;
 const [core, ...rest] = groups;
 ---
 
 <div class="grid gap-4 md:grid-cols-2">
-  {core && <SkillGroup group={core} class="md:col-span-2" />}
-  {rest.map((group) => <SkillGroup group={group} />)}
+  {core && <SkillGroup group={core} skillHrefs={skillHrefs} class="md:col-span-2" />}
+  {rest.map((group) => <SkillGroup group={group} skillHrefs={skillHrefs} />)}
 </div>

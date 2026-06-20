@@ -38,6 +38,14 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    {/* Mark JS as available before first paint so JS-only enhancements (e.g. the
+        case-studies filter bar) can render without a no-JS flash. */}
+    <script is:inline>
+      try {
+        document.documentElement.classList.add("js");
+      } catch (e) {}
+    </script>
+
     {/* If a language switch is pending, hide the page before first paint so it
         never flashes at the top before the body-end script restores scroll.
         Revealed by that script (or DOMContentLoaded as a failsafe). */}

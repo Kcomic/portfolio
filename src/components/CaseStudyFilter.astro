@@ -1,0 +1,51 @@
+---
+/**
+ * Technology filter for the case studies list. Ships `hidden` and is revealed
+ * only under `html.js` (it does nothing without JS — all cards stay visible).
+ * Chip state lives in `aria-pressed`; the client script in CaseStudiesPage
+ * toggles `.is-hidden` on the cards and updates the live count.
+ */
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
+import type { TechFacet } from "@/lib/skills";
+
+interface Props {
+  locale: Locale;
+  facets: TechFacet[];
+  total: number;
+}
+
+const { locale, facets, total } = Astro.props;
+const t = useTranslations(locale);
+
+const chip = [
+  "inline-flex cursor-pointer items-center rounded border border-line-soft bg-ink-900 px-3 py-1",
+  "font-mono text-xs text-mist transition-colors hover:border-accent-deep hover:text-fog",
+  "aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-ink-950",
+].join(" ");
+
+const initialCount = total === 1 ? t("filter.countOne") : t("filter.count").replace("{n}", String(total));
+---
+
+<div
+  data-case-filter
+  data-count-tpl={t("filter.count")}
+  data-count-one={t("filter.countOne")}
+  class="mb-10 border-b border-line-soft pb-8"
+>
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+    <span class="font-mono text-[10px] tracking-[0.18em] text-dim uppercase">{t("filter.label")}</span>
+    <div role="group" aria-label={t("filter.label")} class="flex flex-wrap gap-1.5">
+      <button type="button" data-skill="" aria-pressed="true" class={chip}>{t("filter.all")}</button>
+      {
+        facets.map((f) => (
+          <button type="button" data-skill={f.slug} aria-pressed="false" class={chip}>
+            {f.label}
+            <span class="ml-1 opacity-60">·{f.count}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+  <p data-filter-count aria-live="polite" class="mt-4 font-mono text-xs text-dim">{initialCount}</p>
+</div>

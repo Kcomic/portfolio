@@ -28,6 +28,10 @@ export const ui = {
     "footer.colophon": "Designed and built by hand — Astro + Tailwind, no template.",
     "footer.email": "Email",
     "home.viewAll": "View all case studies",
+    "filter.label": "Filter by technology",
+    "filter.all": "All",
+    "filter.count": "{n} case studies",
+    "filter.countOne": "1 case study",
   },
   th: {
     "skip.content": "ข้ามไปยังเนื้อหา",
@@ -55,6 +59,10 @@ export const ui = {
     "footer.colophon": "ออกแบบและเขียนเองทั้งหมด — Astro + Tailwind ไม่ใช้ template",
     "footer.email": "อีเมล",
     "home.viewAll": "ดู case studies ทั้งหมด",
+    "filter.label": "กรองตามเทคโนโลยี",
+    "filter.all": "ทั้งหมด",
+    "filter.count": "{n} case studies",
+    "filter.countOne": "1 case study",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
 

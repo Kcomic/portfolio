@@ -4,16 +4,18 @@ import TechBadge from "./TechBadge.astro";
 
 interface Props {
   group: SkillGroupData;
+  /** Skill label -> filtered case-studies link (undefined = plain badge). */
+  skillHrefs: Map<string, string>;
   class?: string;
 }
 
-const { group, class: className } = Astro.props;
+const { group, skillHrefs, class: className } = Astro.props;
 ---
 
 <section data-reveal class:list={["border border-line-soft bg-ink-900/50 p-6 sm:p-7", className]}>
   <h2 class="font-display text-lg font-medium text-fog">{group.title}</h2>
   <p class="mt-1.5 text-sm text-dim">{group.note}</p>
   <div class="mt-5 flex flex-wrap gap-1.5">
-    {group.skills.map((skill) => <TechBadge label={skill} />)}
+    {group.skills.map((skill) => <TechBadge label={skill} href={skillHrefs.get(skill)} />)}
   </div>
 </section>

@@ -1,6 +1,7 @@
 ---
 import type { Locale } from "@/i18n/config";
 import { getContent } from "@/data/content";
+import { getExpertiseSkillHrefs } from "@/lib/skills";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SectionHeading from "@/components/SectionHeading.astro";
 import ExpertiseGrid from "@/components/ExpertiseGrid.astro";
@@ -13,6 +14,13 @@ interface Props {
 
 const { locale } = Astro.props;
 const expertise = getContent(locale).expertise;
+
+// Skills that a case study actually backs link to the filtered list (the page's
+// "which case study backs each row up" promise, made interactive).
+const skillHrefs = await getExpertiseSkillHrefs(
+  locale,
+  expertise.groups.flatMap((g) => g.skills),
+);
 ---
 
 <BaseLayout locale={locale} title={expertise.title} description={expertise.lead}>
@@ -27,7 +35,7 @@ const expertise = getContent(locale).expertise;
   </section>
 
   <section data-scroll-anchor="expertise-groups" class="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:py-16">
-    <ExpertiseGrid groups={expertise.groups} />
+    <ExpertiseGrid groups={expertise.groups} skillHrefs={skillHrefs} />
   </section>
 
   <section data-scroll-anchor="capability-matrix" class="mx-auto max-w-6xl px-5 pb-20 sm:px-8 lg:pb-24">

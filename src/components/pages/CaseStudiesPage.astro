@@ -1,9 +1,11 @@
 ---
 import { caseStudySlug, getCaseStudies } from "@/lib/caseStudies";
+import { getTechFacets, techSlugs } from "@/lib/skills";
 import type { Locale } from "@/i18n/config";
 import { getContent } from "@/data/content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CaseStudyCard from "@/components/CaseStudyCard.astro";
+import CaseStudyFilter from "@/components/CaseStudyFilter.astro";
 import CTASection from "@/components/CTASection.astro";
 
 interface Props {
@@ -15,6 +17,7 @@ const page = getContent(locale).caseStudiesPage;
 const cta = getContent(locale).home.cta;
 
 const entries = await getCaseStudies(locale);
+const facets = await getTechFacets(locale);
 ---
 
 <BaseLayout locale={locale} title={page.title} description={page.lead}>
@@ -32,21 +35,72 @@ const entries = await getCaseStudies(locale);
   </section>
 
   <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 lg:py-16">
-    {
-      entries.map((entry) => (
-        <CaseStudyCard
-          locale={locale}
-          slug={caseStudySlug(entry)}
-          title={entry.data.title}
-          subtitle={entry.data.subtitle}
-          summary={entry.data.summary}
-          challenge={entry.data.challenge}
-          stack={entry.data.stack}
-          order={entry.data.order}
-        />
-      ))
-    }
+    <CaseStudyFilter locale={locale} facets={facets} total={entries.length} />
+    <div data-case-list>
+      {
+        entries.map((entry) => (
+          <CaseStudyCard
+            locale={locale}
+            slug={caseStudySlug(entry)}
+            title={entry.data.title}
+            subtitle={entry.data.subtitle}
+            summary={entry.data.summary}
+            challenge={entry.data.challenge}
+            stack={entry.data.stack}
+            order={entry.data.order}
+            techSlugs={techSlugs(entry)}
+          />
+        ))
+      }
+    </div>
   </section>
 
   <CTASection title={cta.title} body={cta.body} primary={cta.primary} />
 </BaseLayout>
+
+<script>
+  // Client-side technology filter (progressive enhancement). The page ships all
+  // cards; this toggles `.is-hidden` by the selected tech, keeps the count in
+  // sync, and mirrors the selection into `?skill=` so views are shareable.
+  // Scroll-reveal is left alone — the IntersectionObserver reveals a card the
+  // moment it's un-hidden into view, so no card gets stuck hidden.
+  const filter = document.querySelector("[data-case-filter]");
+  const list = document.querySelector("[data-case-list]");
+  if (filter instanceof HTMLElement && list) {
+    const chips = Array.from(filter.querySelectorAll("button[data-skill]"));
+    const cards = Array.from(list.querySelectorAll("[data-skills]"));
+    const countEl = filter.querySelector("[data-filter-count]");
+    const tpl = filter.dataset.countTpl || "{n}";
+    const one = filter.dataset.countOne || "1";
+    const known = new Set(chips.map((c) => c.getAttribute("data-skill") || ""));
+
+    const apply = (skill: string) => {
+      let shown = 0;
+      for (const card of cards) {
+        const skills = (card.getAttribute("data-skills") || "").split(" ");
+        const match = !skill || skills.includes(skill);
+        card.classList.toggle("is-hidden", !match);
+        if (match) shown += 1;
+      }
+      for (const chip of chips) {
+        chip.setAttribute("aria-pressed", String((chip.getAttribute("data-skill") || "") === skill));
+      }
+      if (countEl) countEl.textContent = shown === 1 ? one : tpl.replace("{n}", String(shown));
+    };
+
+    // Deep-link / shared URL: apply ?skill= on load (case-insensitive, validated).
+    const param = (new URLSearchParams(location.search).get("skill") || "").toLowerCase();
+    apply(known.has(param) ? param : "");
+
+    for (const chip of chips) {
+      chip.addEventListener("click", () => {
+        const skill = chip.getAttribute("data-skill") || "";
+        apply(skill);
+        const url = new URL(location.href);
+        if (skill) url.searchParams.set("skill", skill);
+        else url.searchParams.delete("skill");
+        history.replaceState(null, "", url);
+      });
+    }
+  }
+</script>

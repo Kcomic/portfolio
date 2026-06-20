@@ -236,6 +236,21 @@
     transform: none;
   }
 
+  /* Case-study filter: rows the active filter excludes (toggled client-side). */
+  .is-hidden {
+    display: none !important;
+  }
+
+  /* The filter bar does nothing without JS, so it's hidden by default and shown
+     only once JS is available (html.js is set pre-paint in BaseLayout). */
+  [data-case-filter] {
+    display: none;
+  }
+
+  html.js [data-case-filter] {
+    display: block;
+  }
+
   /* Case study body typography (hand-rolled, no plugin) */
   .case-prose {
     font-size: 1.0625rem;

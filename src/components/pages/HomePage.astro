@@ -1,5 +1,6 @@
 ---
 import { caseStudySlug, getCaseStudies } from "@/lib/caseStudies";
+import { techSlugs } from "@/lib/skills";
 import type { Locale } from "@/i18n/config";
 import { useTranslations } from "@/i18n/ui";
 import { localizePath } from "@/i18n/utils";
@@ -93,6 +94,7 @@ const entries = allEntries.slice(0, FEATURED_LIMIT);
             challenge={entry.data.challenge}
             stack={entry.data.stack}
             order={entry.data.order}
+            techSlugs={techSlugs(entry)}
           />
         ))
       }
