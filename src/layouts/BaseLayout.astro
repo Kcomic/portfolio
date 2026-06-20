@@ -186,6 +186,41 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
       })();
     </script>
 
+    {/* First-visit boot: hold each [data-boot-watch] block (diagram, terminal)
+        until it scrolls into view, so mobile users — where those blocks sit below
+        the fold — actually see them play instead of finishing off-screen. Only
+        runs while the hero is booting; on any failure it just reveals everything
+        (paused animations resume), so content can never get stuck hidden. */}
+    <script is:inline>
+      (function () {
+        if (!document.documentElement.classList.contains("boot")) return;
+        var blocks = document.querySelectorAll("[data-boot-watch]");
+        function showAll() {
+          for (var i = 0; i < blocks.length; i++) blocks[i].classList.add("in-view");
+        }
+        try {
+          if (!("IntersectionObserver" in window)) {
+            showAll();
+            return;
+          }
+          var io = new IntersectionObserver(
+            function (entries, obs) {
+              for (var i = 0; i < entries.length; i++) {
+                if (entries[i].isIntersecting) {
+                  entries[i].target.classList.add("in-view");
+                  obs.unobserve(entries[i].target);
+                }
+              }
+            },
+            { threshold: 0.2 },
+          );
+          for (var i = 0; i < blocks.length; i++) io.observe(blocks[i]);
+        } catch (e) {
+          showAll();
+        }
+      })();
+    </script>
+
     <script>
       // Scroll reveal — progressive enhancement; content is visible without JS
       // because the .reveal class is only added here.

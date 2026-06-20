@@ -57,11 +57,17 @@ const { hero, terminal } = getContent(locale).home;
     </div>
 
     <div class="min-w-0 lg:col-span-6">
-      {/* The diagram is not wrapped in a single data-boot: its nodes and edges
-          stage themselves in (see HeroArchitectureVisual / global.css .boot-node)
-          so the system appears to "boot up" piece by piece. */}
-      <HeroArchitectureVisual locale={locale} />
-      <TerminalPanel title={terminal.title} lines={terminal.lines} class="mt-6" />
+      {/* data-boot-watch holds each block's boot until it scrolls into view (see
+          global.css + the IntersectionObserver in BaseLayout). On desktop both
+          are visible on load and boot immediately; on mobile they stack below the
+          fold, so this lets users actually see them play when scrolled to. The
+          diagram's nodes/edges still stage themselves in piece by piece. */}
+      <div data-boot-watch>
+        <HeroArchitectureVisual locale={locale} />
+      </div>
+      <div data-boot-watch class="mt-6">
+        <TerminalPanel title={terminal.title} lines={terminal.lines} />
+      </div>
     </div>
   </div>
 </section>

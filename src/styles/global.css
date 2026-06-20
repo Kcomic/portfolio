@@ -376,3 +376,24 @@ html.boot .flow-line.boot-edge {
     flow-dash 1.8s linear infinite,
     boot-fade 0.45s var(--ease-out-expo) var(--boot-delay, 0s) both;
 }
+
+/* Hold each watched block's boot animations (paused) until it scrolls into view,
+   then run them. A block is marked .in-view by the IntersectionObserver in
+   BaseLayout. Only the diagram + terminal are watched (they stack below the fold
+   on mobile and would otherwise finish off-screen); the hero text and the
+   power-on sweep sit above the fold and still boot on load. Unlayered and placed
+   last so animation-play-state wins over the flow-edge rule above (same
+   specificity → source order decides). */
+html.boot [data-boot-watch] [data-boot],
+html.boot [data-boot-watch] .boot-node,
+html.boot [data-boot-watch] .boot-edge,
+html.boot [data-boot-watch] .boot-typed {
+  animation-play-state: paused;
+}
+
+html.boot [data-boot-watch].in-view [data-boot],
+html.boot [data-boot-watch].in-view .boot-node,
+html.boot [data-boot-watch].in-view .boot-edge,
+html.boot [data-boot-watch].in-view .boot-typed {
+  animation-play-state: running;
+}
