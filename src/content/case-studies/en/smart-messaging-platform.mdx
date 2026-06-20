@@ -9,6 +9,7 @@ stack: ["NestJS", "Angular", "MongoDB", "Mongoose", "Agenda", "Node.js", "Docker
 ---
 
 import CaseStudySection from "@/components/CaseStudySection.astro";
+import MessagingArchitecture from "@/components/MessagingArchitecture.astro";
 
 <CaseStudySection n="01" title="Context">
 
@@ -40,6 +41,15 @@ A naive implementation reads the uploaded file into memory, validates everything
 </CaseStudySection>
 
 <CaseStudySection n="04" title="Solution">
+
+<figure data-reveal class="my-2 rounded-lg border border-line-soft bg-ink-900/40 p-5 sm:p-6">
+  <div class="overflow-x-auto">
+    <MessagingArchitecture />
+  </div>
+  <figcaption class="mt-4 text-center font-mono text-xs text-dim">
+    One validation pipeline for every input · memory-flat batched delivery · MongoDB-backed reporting
+  </figcaption>
+</figure>
 
 I kept the backend on NestJS services and put the effort into the data flow rather than rewriting anything. Validation became an explicit preparation pipeline: inputs are read in chunks, validated, deduplicated, and staged before delivery, so one pipeline serves manual input, file input, and contact selection alike.
 
