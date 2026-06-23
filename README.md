@@ -3,7 +3,7 @@
 Bilingual (EN / TH) personal portfolio for a Web Application Consultant · Backend Specialist.
 Built with **Astro 6 + TypeScript + Tailwind CSS 4 + MDX**, fully static, dark-mode-first.
 
-**Live demo:** https://&lt;bawonsak.pages.dev&gt; — replace once deployed (the domain comes from the `SITE_URL` env var; see the checklist below).
+**Live demo:** [bawonsak.pages.dev](https://bawonsak.pages.dev)
 
 ![Portfolio homepage](docs/screenshot.png)
 
@@ -47,7 +47,7 @@ npm run preview    # serve dist/ locally
 
 ## Before going live — checklist
 
-- [ ] Cloudflare Pages → Settings → **Environment variables** → add `SITE_URL` (Production scope) = your custom domain, e.g. `https://example.com`. Every absolute URL (canonical/hreflang/OG/sitemap/robots) derives from it. Preview deploys auto-use `CF_PAGES_URL`, so leave `SITE_URL` unset for Preview.
+- [x] Cloudflare Pages → Settings → **Environment variables** → `SITE_URL` (Production scope) = `https://bawonsak.pages.dev`. Every absolute URL (canonical/hreflang/OG/sitemap/robots) derives from it. Preview deploys auto-use `CF_PAGES_URL`, so leave `SITE_URL` unset for Preview.
 - [x] `src/data/site.ts` → **GitHub / LinkedIn URLs** point to real profiles.
 - [x] `public/og.png` (1200×630) is included. To regenerate after editing `public/og.svg`, render the SVG at 1200×630 and export as PNG.
 
