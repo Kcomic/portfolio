@@ -1,5 +1,6 @@
 ---
 import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
 import { getContent } from "@/data/content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SectionHeading from "@/components/SectionHeading.astro";
@@ -11,10 +12,33 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const t = useTranslations(locale);
 const about = getContent(locale).about;
+
+// ProfilePage node — marks this page as the canonical profile of #person, so
+// search engines tie the biography here to the sitewide Person entity.
+const fallback = new URL("http://localhost:4321");
+const origin = (Astro.site ?? fallback).origin;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? fallback).href;
+const profileNode = {
+  "@type": "ProfilePage",
+  "@id": `${canonical}#webpage`,
+  url: canonical,
+  inLanguage: locale === "th" ? "th-TH" : "en-US",
+  isPartOf: { "@id": `${origin}/#website` },
+  about: { "@id": `${origin}/#person` },
+  mainEntity: { "@id": `${origin}/#person` },
+};
+const breadcrumbs = [{ name: t("nav.home"), path: "/" }, { name: about.title }];
 ---
 
-<BaseLayout locale={locale} title={about.title}>
+<BaseLayout
+  locale={locale}
+  title={about.metaTitle ?? about.title}
+  description={about.metaDescription}
+  jsonLd={[profileNode]}
+  breadcrumbs={breadcrumbs}
+>
   <section data-scroll-anchor="about-intro" class="bg-blueprint border-b border-line-soft">
     <div class="mx-auto max-w-6xl px-5 pt-16 pb-14 sm:px-8 lg:pt-24 lg:pb-20">
       <div class="grid gap-12 lg:grid-cols-12">

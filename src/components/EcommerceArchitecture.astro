@@ -18,7 +18,7 @@ const description =
   "Architecture of the order consolidator: seller platforms (Shopee, Lazada, JD Central) integrate through per-platform connectors that handle REST and OAuth 2.0 with token refresh and normalize each platform's payloads into one internal order model used by the order core for order, status, and shipment workflows; the order core subscribes to the Thailand Post API for shipments and receives shipment-status changes back as webhooks (a fast path) reconciled by polling the API as the source of truth; data is persisted in a relational SQL database, operators work over the consolidated data in a React/Next.js UI, and the services are deployed with Docker and Jenkins.";
 ---
 
-<svg viewBox="0 0 700 514" role="img" aria-label={description} class="h-auto w-full min-w-150 select-none">
+<svg viewBox="0 0 700 514" role="img" lang="en" aria-label={description} class="h-auto w-full min-w-150 select-none">
   <title>{description}</title>
   <defs>
     <marker id="ec-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">

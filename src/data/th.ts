@@ -167,6 +167,9 @@ export const th: LocaleContent = {
 
   about: {
     title: "เกี่ยวกับผม",
+    metaTitle: "นักพัฒนา Backend และที่ปรึกษา Web Application",
+    metaDescription:
+      "วิศวกรซอฟต์แวร์และที่ปรึกษา web application ในกรุงเทพฯ เชี่ยวชาญ backend, ระบบข้อมูลขนาดใหญ่ และการ integrate — ทำงานด้วย NestJS, MongoDB และ Kubernetes",
     heading: "ผมทำ web system ได้ทั้งก้อน — และไม่หายไปตอน deploy",
     paragraphs: [
       `ผมเป็น software engineer และที่ปรึกษา ออกแบบและพัฒนา web application ตั้งแต่ frontend, API, database ไปจนถึงการ deploy และดูแลระบบเบื้องหลัง โดยลงลึกที่สุดในส่วนที่ยาก: backend, ข้อมูลปริมาณมาก, integration และ production ตอนนี้ผมเป็น developer ที่ ${site.company.replace(" Co., Ltd.", "")} และรับงานโปรเจกต์ของลูกค้าควบคู่ไปด้วย`,
@@ -242,6 +245,9 @@ export const th: LocaleContent = {
 
   caseStudiesPage: {
     title: "Case Studies",
+    metaTitle: "ผลงานระบบ Backend ที่ใช้งานจริง — Case Studies",
+    metaDescription:
+      "สามระบบที่ใช้งานจริงใน production — messaging platform, ระบบรวมออเดอร์ e-commerce และ MongoDB reporting pipeline พร้อมข้อจำกัดและ trade-off เบื้องหลังแต่ละงาน",
     heading: "ระบบที่ผมสร้าง และสิ่งที่มันสอนผม",
     lead: "สามระบบที่ผ่าน production จริง — เล่า context ข้อจำกัด trade-off และสิ่งที่แต่ละระบบเปลี่ยนไปจริง ๆ",
     anonymized: "รายละเอียดลูกค้าและบริษัทถูกปิดไว้ แต่โจทย์และเนื้องาน engineering เป็นของจริง",
@@ -249,6 +255,9 @@ export const th: LocaleContent = {
 
   expertise: {
     title: "ความเชี่ยวชาญ",
+    metaTitle: "ความเชี่ยวชาญ Backend, Database และ Kubernetes",
+    metaDescription:
+      "สถาปัตยกรรม backend, ประสิทธิภาพฐานข้อมูล, การเชื่อมต่อ API และการ deploy บน Kubernetes โดยแต่ละความสามารถมี case study จากงานจริงรองรับ",
     heading: "แผนที่ความสามารถ ไม่ใช่กำแพงโลโก้",
     lead: "ผมออกแบบ สร้าง และดูแลอะไรได้บ้าง — และ case study ไหนเป็นหลักฐานของแต่ละแถว",
     groups: [
@@ -410,6 +419,9 @@ export const th: LocaleContent = {
 
   contact: {
     title: "ติดต่อ",
+    metaTitle: "จ้างนักพัฒนา Backend / Web Application ในกรุงเทพฯ",
+    metaDescription:
+      "รับงานพัฒนา web application, ระบบ backend, การเชื่อมต่อ API และ architecture review — ติดต่อวิศวกรและที่ปรึกษาในกรุงเทพฯ ได้โดยตรง",
     heading: "คุยเรื่องระบบของคุณกันครับ",
     lead: "ผมรับงานพัฒนา web application, งาน backend และ integration, internal tool, architecture review และ technical consulting — ไม่ว่าจะสร้างใหม่ทั้งก้อน หรือเสริม backend ให้ของที่มีอยู่แล้ว",
     emailLabel: "อีเมลหาผมโดยตรง",

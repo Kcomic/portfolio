@@ -2,6 +2,7 @@
 import { caseStudySlug, getCaseStudies } from "@/lib/caseStudies";
 import { getTechFacets, techSlugs } from "@/lib/skills";
 import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
 import { getContent } from "@/data/content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CaseStudyCard from "@/components/CaseStudyCard.astro";
@@ -13,14 +14,21 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const t = useTranslations(locale);
 const page = getContent(locale).caseStudiesPage;
 const cta = getContent(locale).home.cta;
+const breadcrumbs = [{ name: t("nav.home"), path: "/" }, { name: page.title }];
 
 const entries = await getCaseStudies(locale);
 const facets = await getTechFacets(locale);
 ---
 
-<BaseLayout locale={locale} title={page.title} description={page.lead}>
+<BaseLayout
+  locale={locale}
+  title={page.metaTitle ?? page.title}
+  description={page.metaDescription ?? page.lead}
+  breadcrumbs={breadcrumbs}
+>
   <section class="bg-blueprint border-b border-line-soft">
     <div class="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:px-8 lg:pt-24 lg:pb-16">
       <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">{page.title}</p>
@@ -49,6 +57,7 @@ const facets = await getTechFacets(locale);
             stack={entry.data.stack}
             order={entry.data.order}
             techSlugs={techSlugs(entry)}
+            headingLevel={2}
           />
         ))
       }

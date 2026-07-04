@@ -4,8 +4,8 @@ import { Font } from "astro:assets";
 
 import type { Locale } from "@/i18n/config";
 import { useTranslations } from "@/i18n/ui";
-import { getBasePath } from "@/i18n/utils";
-import { buildAlternates, ogLocale } from "@/lib/seo";
+import { getBasePath, localizePath } from "@/i18n/utils";
+import { buildAlternates, buildSiteGraph, ogLocale } from "@/lib/seo";
 import { seo, site } from "@/data/site";
 import Navbar from "@/components/Navbar.astro";
 import Footer from "@/components/Footer.astro";
@@ -17,9 +17,21 @@ interface Props {
   description?: string;
   /** Enable the first-visit hero "boot-up" entrance (home page only). */
   boot?: boolean;
+  /** Per-page schema.org nodes, merged into the sitewide @graph in <head>. */
+  jsonLd?: Record<string, unknown>[];
+  /** Trail for the BreadcrumbList node; the last crumb usually omits `path`. */
+  breadcrumbs?: { name: string; path?: string }[];
+  /** og:type — "article" on case studies, "website" everywhere else. */
+  ogType?: "website" | "article";
+  /** article:* Open Graph meta, emitted only when ogType === "article". */
+  article?: { publishedTime?: string; modifiedTime?: string; author?: string; section?: string; tags?: string[] };
+  /** Root-relative OG/Twitter image path; defaults to the shared /og.png. */
+  ogImage?: string;
+  /** Alt text for the OG/Twitter image; defaults to the brand line. */
+  ogImageAlt?: string;
 }
 
-const { locale, title, description, boot } = Astro.props;
+const { locale, title, description, boot, jsonLd = [], breadcrumbs, ogType = "website", article, ogImage, ogImageAlt } = Astro.props;
 const t = useTranslations(locale);
 
 const pageTitle = title ? seo[locale].titleTemplate(title) : seo[locale].title;
@@ -29,7 +41,40 @@ const siteOrigin = Astro.site ?? new URL("http://localhost:4321");
 const basePath = getBasePath(Astro.url.pathname);
 const alternates = buildAlternates(basePath, siteOrigin);
 const canonical = alternates.find((a) => a.hreflang === locale)?.href;
-const ogImage = new URL(site.ogImage, siteOrigin).href;
+// Absolute OG/Twitter image URL — a per-page card when supplied (case studies),
+// otherwise the shared hand-designed /og.png. Its alt defaults to the brand line.
+const ogImageUrl = new URL(ogImage ?? site.ogImage, siteOrigin).href;
+const ogImageAltText = ogImageAlt ?? `${site.name} — ${site.role}`;
+
+// Cloudflare Pages preview/branch builds inject CF_PAGES but not SITE_URL. Keep
+// those per-commit deploys out of the search index so they never outrank prod.
+const isPreview = !process.env.SITE_URL && !!process.env.CF_PAGES;
+
+// Build the page's JSON-LD: the sitewide entity graph (Person/Org/WebSite),
+// plus an optional BreadcrumbList, plus any per-page nodes — one <script> so
+// every @id cross-reference resolves within a single graph.
+const breadcrumbNode = breadcrumbs?.length
+  ? {
+      "@type": "BreadcrumbList",
+      "@id": `${canonical}#breadcrumb`,
+      itemListElement: breadcrumbs.map((crumb, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: crumb.name,
+        ...(crumb.path ? { item: new URL(localizePath(crumb.path, locale), siteOrigin).href } : {}),
+      })),
+    }
+  : null;
+
+const graph = [
+  ...buildSiteGraph(siteOrigin.origin, locale),
+  ...(breadcrumbNode ? [breadcrumbNode] : []),
+  ...jsonLd,
+];
+// set:html is raw and JSON.stringify does not escape "<", so neutralise any
+// literal "</script>" a future data value could contain (defensive — current
+// content is author-controlled and safe).
+const jsonLdHtml = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -77,38 +122,58 @@ const ogImage = new URL(site.ogImage, siteOrigin).href;
       } catch (e) {}
     </script>
 
-    {/* Preload every face used above the fold so display:"optional" renders
-        branded (not the fallback) on a normal load: the display H1, the body
-        copy, and the mono used in the eyebrow/status/terminal labels on every
-        page. The Thai face is only above the fold on /th, so preload it there
-        only — on EN it would be unused bytes. */}
+    {/* Preload only the faces used above the fold so display:"swap" renders
+        branded (not the fallback) on a normal load: the display H1 and the body
+        copy. The Thai face is only above the fold on /th, so preload it there
+        only — on EN it would be unused bytes. Mono is deliberately NOT preloaded:
+        it dresses only small eyebrow/label text (never the LCP element) and its
+        capsize fallback holds layout at CLS 0, so a preload would just compete
+        with the LCP fetch for bandwidth. */}
     <Font cssVariable="--font-space-grotesk" preload />
     <Font cssVariable="--font-ibm-plex-sans" preload />
     <Font cssVariable="--font-ibm-plex-sans-thai" preload={locale === "th"} />
-    <Font cssVariable="--font-ibm-plex-mono" preload />
+    <Font cssVariable="--font-ibm-plex-mono" />
 
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <meta name="author" content={site.name} />
+    {isPreview && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#060a12" />
+    <meta name="google-site-verification" content={site.googleSiteVerification} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="canonical" href={canonical} />
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <meta name="generator" content={Astro.generator} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAltText} />
     <meta property="og:locale" content={ogLocale(locale)} />
     <meta property="og:site_name" content={site.name} />
+    {
+      ogType === "article" && article && (
+        <>
+          {article.author && <meta property="article:author" content={article.author} />}
+          {article.section && <meta property="article:section" content={article.section} />}
+          {article.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+          {article.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+          {article.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime} />}
+        </>
+      )
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAltText} />
+
+    <script type="application/ld+json" set:html={jsonLdHtml} is:inline />
   </head>
   <body>
     <a

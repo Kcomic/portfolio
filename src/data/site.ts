@@ -10,6 +10,8 @@ export const site = {
   github: "https://github.com/Kcomic",
   linkedin: "https://www.linkedin.com/in/bawonsak-petchbunjerdkul-100590163",
   ogImage: "/og.png",
+  /** Google Search Console verification token (rendered as a <meta> in <head>). */
+  googleSiteVerification: "br4Jlu_lPl3A8rSfUNSQXO1drcgLIuD3Nu_D-MrDzKY",
 } as const;
 
 export const seo: Record<
@@ -19,13 +21,13 @@ export const seo: Record<
   en: {
     title: "Bawonsak Petchbunjerdkul | Web Application Consultant · Backend Specialist",
     description:
-      "I design and build web applications — UI, API, database, deployment, and the operations after — with backend and production reliability as my core strength. Full-stack development with NestJS, Node.js, Express, React, Next.js, Angular, MongoDB, PostgreSQL, Docker, and Kubernetes.",
+      "I design, build, and run web applications end to end — UI, API, database, and deployment — with backend and production reliability as my core strength.",
     titleTemplate: (page) => `${page} — Bawonsak Petchbunjerdkul`,
   },
   th: {
-    title: "Bawonsak Petchbunjerdkul | Web Application Consultant · Backend Specialist",
+    title: "รับพัฒนา Web Application และระบบ Backend | Bawonsak Petchbunjerdkul",
     description:
-      "ผมออกแบบและพัฒนา web application ตั้งแต่ UI, API, database, การ deploy ไปจนถึงการดูแลหลังขึ้น production โดยมีจุดแข็งที่ backend และความน่าเชื่อถือใน production ทำงาน full-stack ด้วย NestJS, Node.js, Express, React, Next.js, Angular, MongoDB, PostgreSQL, Docker และ Kubernetes",
+      "ผมออกแบบและพัฒนา web application ตั้งแต่ UI, API, database ไปจนถึงการ deploy และดูแลหลังขึ้น production โดยมีจุดแข็งที่ backend และความน่าเชื่อถือของระบบ",
     titleTemplate: (page) => `${page} — Bawonsak Petchbunjerdkul`,
   },
 };

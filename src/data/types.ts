@@ -77,6 +77,10 @@ export interface HomeContent {
 
 export interface AboutContent {
   title: string;
+  /** Keyword-rich <title> (before the name suffix); falls back to `title`. */
+  metaTitle?: string;
+  /** Unique <meta description>; without it the page inherits the home fallback. */
+  metaDescription?: string;
   heading: string;
   paragraphs: string[];
   fits: { title: string; items: string[] };
@@ -88,6 +92,8 @@ export interface AboutContent {
 
 export interface CaseStudiesPageContent {
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
   heading: string;
   lead: string;
   anonymized: string;
@@ -95,6 +101,8 @@ export interface CaseStudiesPageContent {
 
 export interface ExpertiseContent {
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
   heading: string;
   lead: string;
   groups: SkillGroupData[];
@@ -109,6 +117,8 @@ export interface ExpertiseContent {
 
 export interface ContactContent {
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
   heading: string;
   lead: string;
   emailLabel: string;

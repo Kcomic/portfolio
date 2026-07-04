@@ -1,0 +1,28 @@
+---
+// Astro emits dist/404.html; Cloudflare Pages serves it for every unmatched
+// path, including /th/*, so the copy is bilingual rather than locale-specific.
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout locale="en" title="Page not found">
+  <section class="mx-auto flex min-h-[60vh] max-w-3xl flex-col justify-center px-5 py-24 sm:px-8">
+    <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">Error 404</p>
+    <h1 class="mt-4 font-display text-4xl font-medium tracking-tight text-fog sm:text-5xl">
+      This page doesn't exist.
+    </h1>
+    <p class="mt-5 max-w-xl text-base leading-relaxed text-mist">
+      The link may be broken, or the page may have moved.
+      <span lang="th" class="text-dim">— ลิงก์อาจเสีย หรือหน้าถูกย้ายไปแล้ว</span>
+    </p>
+    <div class="mt-8 flex flex-wrap gap-5 font-mono text-sm">
+      <a
+        href="/"
+        class="text-accent underline decoration-accent-deep underline-offset-4 transition-colors hover:text-fog"
+      >
+        ← Home
+      </a>
+      <a href="/case-studies/" class="text-mist transition-colors hover:text-fog">Case studies</a>
+      <a href="/contact/" class="text-mist transition-colors hover:text-fog">Contact</a>
+    </div>
+  </section>
+</BaseLayout>

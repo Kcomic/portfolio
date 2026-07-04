@@ -167,6 +167,9 @@ export const en: LocaleContent = {
 
   about: {
     title: "About",
+    metaTitle: "Backend Developer & Web Application Consultant",
+    metaDescription:
+      "Backend-focused engineer and web application consultant in Bangkok. Messaging platforms, e-commerce integrations, and large-data systems on NestJS, MongoDB & Kubernetes.",
     heading: "I build complete web systems — and I don't leave at deploy.",
     paragraphs: [
       `I'm a software engineer and consultant. I design and build web applications end to end — frontend, API, database, and the deployment and operations behind them — and I go deepest where it gets hard: backend, large data, integration, and production. I'm currently a developer at ${site.company.replace(" Co., Ltd.", "")} and take on client projects alongside that.`,
@@ -242,6 +245,9 @@ export const en: LocaleContent = {
 
   caseStudiesPage: {
     title: "Case Studies",
+    metaTitle: "Production Backend Systems — Case Studies",
+    metaDescription:
+      "Three production systems — a messaging platform, an e-commerce order consolidator, and a MongoDB reporting pipeline — with the constraints and trade-offs behind each.",
     heading: "Systems I've built and what they taught me",
     lead: "Three production systems — the context, the constraints, the trade-offs, and what each one changed.",
     anonymized: "Client and company specifics are anonymized. The problems and the engineering are real.",
@@ -249,6 +255,9 @@ export const en: LocaleContent = {
 
   expertise: {
     title: "Expertise",
+    metaTitle: "Backend, Database & Kubernetes Expertise",
+    metaDescription:
+      "Backend architecture, database performance, API integration, and Kubernetes deployment — each capability backed by a production case study.",
     heading: "A capability map, not a list of logos",
     lead: "What I can design, build, and operate — and which case study backs each row up.",
     groups: [
@@ -410,6 +419,9 @@ export const en: LocaleContent = {
 
   contact: {
     title: "Contact",
+    metaTitle: "Hire a Backend Developer in Bangkok",
+    metaDescription:
+      "Available for backend and web application builds, integrations, and architecture reviews. Reach a Bangkok-based engineer & consultant directly.",
     heading: "Let's talk about your system.",
     lead: "I take on web applications, backend and integration-heavy systems, internal tools, architecture reviews, and technical consulting — whether you need a full build or backend depth on an existing product.",
     emailLabel: "Email me directly",

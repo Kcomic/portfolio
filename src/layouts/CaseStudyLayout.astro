@@ -2,11 +2,12 @@
 import type { CollectionEntry } from "astro:content";
 import { useTranslations } from "@/i18n/ui";
 import { localizePath } from "@/i18n/utils";
-import { caseStudyLocale } from "@/lib/caseStudies";
+import { caseStudyLocale, caseStudySlug } from "@/lib/caseStudies";
 import BaseLayout from "./BaseLayout.astro";
 import CaseStudyHeader from "@/components/CaseStudyHeader.astro";
 import CTASection from "@/components/CTASection.astro";
 import { getContent } from "@/data/content";
+import { site } from "@/data/site";
 
 interface Props {
   entry: CollectionEntry<"caseStudies">;
@@ -14,13 +15,57 @@ interface Props {
 }
 
 const { entry, next } = Astro.props;
-const { title, subtitle, role, stack, order, summary } = entry.data;
+const { title, subtitle, role, stack, order, summary, startDate, endDate } = entry.data;
 const locale = caseStudyLocale(entry);
 const t = useTranslations(locale);
 const cta = getContent(locale).home.cta;
+
+// Engagement dates → article dates. startDate is required; endDate is omitted
+// for ongoing work (so no fabricated dateModified). ISO 8601 for both.
+const datePublished = startDate.toISOString();
+const dateModified = endDate?.toISOString();
+
+// Per-study OG card rendered at build by src/pages/og/[...slug].png.ts.
+const ogImagePath = `/og/${caseStudySlug(entry)}.png`;
+
+// TechArticle node — describes THIS case study, with author/publisher/isPartOf
+// pointing at the sitewide Person/WebSite @ids so the graph resolves.
+const fallback = new URL("http://localhost:4321");
+const origin = (Astro.site ?? fallback).origin;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? fallback).href;
+const articleNode = {
+  "@type": "TechArticle",
+  "@id": `${canonical}#article`,
+  url: canonical,
+  headline: title,
+  description: summary,
+  keywords: stack,
+  inLanguage: locale,
+  author: { "@id": `${origin}/#person` },
+  publisher: { "@id": `${origin}/#person` },
+  isPartOf: { "@id": `${origin}/#website` },
+  image: `${origin}${ogImagePath}`,
+  datePublished,
+  ...(dateModified ? { dateModified } : {}),
+};
+const breadcrumbs = [
+  { name: t("nav.home"), path: "/" },
+  { name: t("nav.caseStudies"), path: "/case-studies" },
+  { name: title },
+];
 ---
 
-<BaseLayout locale={locale} title={title} description={summary}>
+<BaseLayout
+  locale={locale}
+  title={title}
+  description={summary}
+  ogType="article"
+  article={{ author: site.linkedin, section: "Case Study", tags: stack, publishedTime: datePublished, modifiedTime: dateModified }}
+  ogImage={ogImagePath}
+  ogImageAlt={`${title} — case study by ${site.name}`}
+  jsonLd={[articleNode]}
+  breadcrumbs={breadcrumbs}
+>
   <article>
     <CaseStudyHeader
       locale={locale}

@@ -19,12 +19,15 @@ interface Props {
   order: number;
   /** Space-separated tech slugs (from src/lib/skills.ts) for the filter to match. */
   techSlugs: string;
+  /** Heading level for the card title: 2 under a page h1 (index), 3 under an h2 section (home). */
+  headingLevel?: 2 | 3;
 }
 
-const { locale, slug, title, subtitle, summary, challenge, stack, order, techSlugs } = Astro.props;
+const { locale, slug, title, subtitle, summary, challenge, stack, order, techSlugs, headingLevel = 3 } = Astro.props;
 const t = useTranslations(locale);
 const href = localizePath(`/case-studies/${slug}`, locale);
 const n = String(order).padStart(2, "0");
+const Heading = `h${headingLevel}` as "h2" | "h3";
 ---
 
 <article
@@ -39,9 +42,9 @@ const n = String(order).padStart(2, "0");
   </div>
 
   <div class="md:col-span-6">
-    <h3 class="font-display text-xl font-medium tracking-tight text-fog transition-colors group-hover:text-accent sm:text-2xl">
+    <Heading class="font-display text-xl font-medium tracking-tight text-fog transition-colors group-hover:text-accent sm:text-2xl">
       <a href={href} class="before:absolute before:inset-0 before:content-['']">{title}</a>
-    </h3>
+    </Heading>
     <p class="mt-2 text-sm text-mist">{subtitle}</p>
     <p class="mt-4 max-w-prose text-sm leading-relaxed text-dim">{summary}</p>
     <p class="mt-5 font-mono text-xs text-mist">

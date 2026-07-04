@@ -16,6 +16,10 @@ const caseStudies = defineCollection({
     challenge: z.string(),
     role: z.string(),
     stack: z.array(z.string()),
+    /** Engagement start — becomes datePublished + article:published_time. */
+    startDate: z.coerce.date(),
+    /** Engagement end — becomes dateModified + article:modified_time. Omit for ongoing work. */
+    endDate: z.coerce.date().optional(),
   }),
 });
 

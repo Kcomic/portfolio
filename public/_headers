@@ -17,3 +17,12 @@
 
 # HTML keeps the Pages default (public, max-age=0, must-revalidate) on purpose:
 # pages are NOT hashed, so they must revalidate to surface new deploys instantly.
+
+# Static assets in public/ are NOT content-hashed, so they can't be "immutable"
+# (the filename is stable across edits). A bounded max-age still spares the
+# per-visit conditional request the Pages default forces. Refresh window is
+# short enough that a swapped favicon/OG image propagates within days.
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/og.png
+  Cache-Control: public, max-age=2592000

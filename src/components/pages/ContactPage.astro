@@ -1,5 +1,6 @@
 ---
 import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
 import { getContent } from "@/data/content";
 import { site } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -10,10 +11,17 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const t = useTranslations(locale);
 const contact = getContent(locale).contact;
+const breadcrumbs = [{ name: t("nav.home"), path: "/" }, { name: contact.title }];
 ---
 
-<BaseLayout locale={locale} title={contact.title} description={contact.lead}>
+<BaseLayout
+  locale={locale}
+  title={contact.metaTitle ?? contact.title}
+  description={contact.metaDescription ?? contact.lead}
+  breadcrumbs={breadcrumbs}
+>
   <section data-scroll-anchor="contact-intro" class="bg-blueprint border-b border-line-soft">
     <div class="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:px-8 lg:pt-24 lg:pb-16">
       <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">{contact.title}</p>

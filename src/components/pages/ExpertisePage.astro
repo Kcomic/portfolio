@@ -1,5 +1,6 @@
 ---
 import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/ui";
 import { getContent } from "@/data/content";
 import { getExpertiseSkillHrefs } from "@/lib/skills";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -13,7 +14,9 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const t = useTranslations(locale);
 const expertise = getContent(locale).expertise;
+const breadcrumbs = [{ name: t("nav.home"), path: "/" }, { name: expertise.title }];
 
 // Skills that a case study actually backs link to the filtered list (the page's
 // "which case study backs each row up" promise, made interactive).
@@ -23,7 +26,12 @@ const skillHrefs = await getExpertiseSkillHrefs(
 );
 ---
 
-<BaseLayout locale={locale} title={expertise.title} description={expertise.lead}>
+<BaseLayout
+  locale={locale}
+  title={expertise.metaTitle ?? expertise.title}
+  description={expertise.metaDescription ?? expertise.lead}
+  breadcrumbs={breadcrumbs}
+>
   <section data-scroll-anchor="expertise-intro" class="bg-blueprint border-b border-line-soft">
     <div class="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:px-8 lg:pt-24 lg:pb-16">
       <p class="font-mono text-xs tracking-[0.18em] text-dim uppercase">01 · {expertise.title}</p>
