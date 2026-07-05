@@ -19,7 +19,7 @@ export const seo: Record<
   { title: string; description: string; titleTemplate: (page: string) => string }
 > = {
   en: {
-    title: "Bawonsak Petchbunjerdkul | Web Application Consultant · Backend Specialist",
+    title: "Bawonsak Petchbunjerdkul | Web Application & Backend Consultant",
     description:
       "I design, build, and run web applications end to end — UI, API, database, and deployment — with backend and production reliability as my core strength.",
     titleTemplate: (page) => `${page} — Bawonsak Petchbunjerdkul`,

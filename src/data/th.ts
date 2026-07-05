@@ -245,7 +245,7 @@ export const th: LocaleContent = {
 
   caseStudiesPage: {
     title: "Case Studies",
-    metaTitle: "ผลงานระบบ Backend ที่ใช้งานจริง — Case Studies",
+    metaTitle: "ผลงานระบบ Backend ที่ใช้งานจริง: Case Studies",
     metaDescription:
       "สามระบบที่ใช้งานจริงใน production — messaging platform, ระบบรวมออเดอร์ e-commerce และ MongoDB reporting pipeline พร้อมข้อจำกัดและ trade-off เบื้องหลังแต่ละงาน",
     heading: "ระบบที่ผมสร้าง และสิ่งที่มันสอนผม",

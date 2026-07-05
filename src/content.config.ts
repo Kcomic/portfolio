@@ -20,6 +20,13 @@ const caseStudies = defineCollection({
     startDate: z.coerce.date(),
     /** Engagement end — becomes dateModified + article:modified_time. Omit for ongoing work. */
     endDate: z.coerce.date().optional(),
+    /** SEO <title>/og:title override (before the name suffix). The VISIBLE
+     *  heading and JSON-LD headline still use `title`; used mainly to give TH
+     *  pages a Thai-leading title. Falls back to `title`. */
+    metaTitle: z.string().optional(),
+    /** Trimmed meta/OG description (~155 chars); falls back to `summary`
+     *  (which stays the longer card copy). */
+    metaDescription: z.string().optional(),
   }),
 });
 

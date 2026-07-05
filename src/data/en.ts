@@ -167,9 +167,9 @@ export const en: LocaleContent = {
 
   about: {
     title: "About",
-    metaTitle: "Backend Developer & Web Application Consultant",
+    metaTitle: "Backend & Web Application Consultant",
     metaDescription:
-      "Backend-focused engineer and web application consultant in Bangkok. Messaging platforms, e-commerce integrations, and large-data systems on NestJS, MongoDB & Kubernetes.",
+      "Backend engineer and web app consultant in Bangkok — messaging platforms, e-commerce integrations, and large-data systems on NestJS, MongoDB, and Kubernetes.",
     heading: "I build complete web systems — and I don't leave at deploy.",
     paragraphs: [
       `I'm a software engineer and consultant. I design and build web applications end to end — frontend, API, database, and the deployment and operations behind them — and I go deepest where it gets hard: backend, large data, integration, and production. I'm currently a developer at ${site.company.replace(" Co., Ltd.", "")} and take on client projects alongside that.`,
@@ -245,7 +245,7 @@ export const en: LocaleContent = {
 
   caseStudiesPage: {
     title: "Case Studies",
-    metaTitle: "Production Backend Systems — Case Studies",
+    metaTitle: "Case Studies: Production Backend Systems",
     metaDescription:
       "Three production systems — a messaging platform, an e-commerce order consolidator, and a MongoDB reporting pipeline — with the constraints and trade-offs behind each.",
     heading: "Systems I've built and what they taught me",
