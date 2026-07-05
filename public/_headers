@@ -26,3 +26,8 @@
   Cache-Control: public, max-age=604800
 /og.png
   Cache-Control: public, max-age=2592000
+
+# Per-case-study OG cards generated at build (/og/<slug>.png). Same bounded
+# 30-day policy as the shared /og.png above.
+/og/*
+  Cache-Control: public, max-age=2592000

@@ -29,9 +29,12 @@ interface Props {
   ogImage?: string;
   /** Alt text for the OG/Twitter image; defaults to the brand line. */
   ogImageAlt?: string;
+  /** Standalone/uncrawlable routes (e.g. 404) with no localized counterpart:
+   *  emit robots noindex and skip the hreflang alternates. */
+  noindex?: boolean;
 }
 
-const { locale, title, description, boot, jsonLd = [], breadcrumbs, ogType = "website", article, ogImage, ogImageAlt } = Astro.props;
+const { locale, title, description, boot, jsonLd = [], breadcrumbs, ogType = "website", article, ogImage, ogImageAlt, noindex } = Astro.props;
 const t = useTranslations(locale);
 
 const pageTitle = title ? seo[locale].titleTemplate(title) : seo[locale].title;
@@ -138,12 +141,13 @@ const jsonLdHtml = JSON.stringify({ "@context": "https://schema.org", "@graph": 
     <meta name="description" content={pageDescription} />
     <meta name="author" content={site.name} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
+    {!isPreview && noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#060a12" />
     <meta name="google-site-verification" content={site.googleSiteVerification} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="canonical" href={canonical} />
-    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    {!noindex && alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content={ogType} />
